@@ -5,6 +5,8 @@ History of the project development
 Hotfix release. 
 
 ### Added
+- [Issue 2](https://github.com/suikan4github/demo-flutter/issues/2) Add web support.
+
 ### Changed
 ### Deprecated
 ### Removed
