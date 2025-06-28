@@ -516,3 +516,75 @@ jobs:
         asset_path: ${{ steps.create-rpm.outputs.rpm-file }}
         asset_name: ${{ steps.create-rpm.outputs.rpm-file }}
         asset_content_type: application/x-rpm
+
+  build-snap:
+    name: Build Snap Package
+    needs: create-release
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      
+    - name: Setup Flutter
+      uses: subosito/flutter-action@v2
+      with:
+        flutter-version: '3.32.5'
+        channel: 'stable'
+        
+    - name: Install dependencies
+      run: |
+        sudo apt-get update -y
+        sudo apt-get install -y ninja-build libgtk-3-dev
+        
+    - name: Enable Linux desktop
+      run: flutter config --enable-linux-desktop
+      
+    - name: Get dependencies
+      run: flutter pub get
+      
+    - name: Build Linux app
+      run: flutter build linux --release
+      
+    - name: Install Snapcraft
+      run: |
+        sudo snap install snapcraft --classic
+        
+    - name: Prepare Snap build
+      run: |
+        VERSION="${{ needs.create-release.outputs.version }}"
+        VERSION_NUM="${VERSION#v}"  # Remove 'v' prefix
+        
+        # Update version in snapcraft.yaml
+        sed -i "s/version: git/version: '${VERSION_NUM}'/" snap/snapcraft.yaml
+        
+        # Verify snapcraft.yaml
+        cat snap/snapcraft.yaml
+        
+    - name: Build Snap package
+      id: build-snap
+      run: |
+        VERSION="${{ needs.create-release.outputs.version }}"
+        VERSION_NUM="${VERSION#v}"  # Remove 'v' prefix
+        
+        # Build snap
+        snapcraft --destructive-mode
+        
+        # Find generated snap file
+        SNAP_FILE=$(find . -name "*.snap" -type f | head -1)
+        SNAP_NAME="demo-flutter_${VERSION_NUM}_amd64.snap"
+        
+        # Rename to standard format
+        mv "${SNAP_FILE}" "${SNAP_NAME}"
+        
+        echo "snap-file=${SNAP_NAME}" >> $GITHUB_OUTPUT
+        
+    - name: Upload Snap Package
+      uses: actions/upload-release-asset@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        upload_url: ${{ needs.create-release.outputs.upload_url }}
+        asset_path: ${{ steps.build-snap.outputs.snap-file }}
+        asset_name: ${{ steps.build-snap.outputs.snap-file }}
+        asset_content_type: application/octet-stream

@@ -11,6 +11,10 @@ History of the project development
 ### Security
 ### Known Issue
 
+## [v1.5.0] 2025-06-28
+### Added
+- [Issue #11](https://github.com/suikan4github/demo-flutter/issues/11) Add snap package to release file. 
+
 ## [v1.4.2] 2025-06-28
 ### Fixed
 - RPM build dependencies - removed BuildRequires from spec file
@@ -55,7 +59,8 @@ History of the project development
 ## [v1.0.0] 2025-06-28
 Pre-release version. 
 
-[Unreleased]: https://github.com/suikan4github/demo-flutter/compare/v1.4.2...develop
+[Unreleased]: https://github.com/suikan4github/demo-flutter/compare/v1.5.0...develop
+[v1.5.0]: https://github.com/suikan4github/demo-flutter/compare/v1.4.2...v1.5.0
 [v1.4.2]: https://github.com/suikan4github/demo-flutter/compare/v1.4.1...v1.4.2
 [v1.4.1]: https://github.com/suikan4github/demo-flutter/compare/v1.4.0...v1.4.1
 [v1.4.0]: https://github.com/suikan4github/demo-flutter/compare/v1.3.0...v1.4.0

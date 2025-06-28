@@ -12,6 +12,7 @@ Download the latest release for your platform:
 - **Linux AppImage**: [Latest Release](https://github.com/suikan4github/demo-flutter/releases/latest) - Universal Linux package
 - **Linux .deb**: [Latest Release](https://github.com/suikan4github/demo-flutter/releases/latest) - Ubuntu/Debian package
 - **Linux .rpm**: [Latest Release](https://github.com/suikan4github/demo-flutter/releases/latest) - Red Hat/Fedora/CentOS package
+- **Linux .snap**: [Latest Release](https://github.com/suikan4github/demo-flutter/releases/latest) - Universal Snap package
 - **Linux tar.gz**: [Latest Release](https://github.com/suikan4github/demo-flutter/releases/latest) - Archive format
 
 ### Installation Methods
@@ -38,6 +39,13 @@ sudo dnf install demo-flutter-v*-1.x86_64.rpm  # Fedora
 sudo yum install demo-flutter-v*-1.x86_64.rpm  # CentOS/RHEL
 demo-flutter  # Run from anywhere
 ```
+
+**Snap Package (Universal Linux):**
+```bash
+sudo snap install demo-flutter-v*_amd64.snap --dangerous --devmode
+demo-flutter  # Run from anywhere
+```
+*Note: --dangerous flag is needed for local snap files not from the official store*
 
 # Details
 This repository contains a simple Flutter application that demonstrates basic functionality and packaging.
