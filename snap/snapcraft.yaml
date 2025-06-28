@@ -68,6 +68,3 @@ parts:
         echo "Creating placeholder icon..."
         touch $SNAPCRAFT_PART_INSTALL/usr/share/icons/hicolor/256x256/apps/demo-flutter.png
       fi
-        echo "Creating placeholder icon..."
-        touch $SNAPCRAFT_PART_INSTALL/usr/share/icons/hicolor/256x256/apps/demo-flutter.png
-      fi
