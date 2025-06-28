@@ -60,10 +60,22 @@ jobs:
         include:
           - os: ubuntu-latest
             platform: linux
+            arch: x64
+            target-arch: x86_64
             artifact-name: demo-flutter-linux-x64
             build-command: flutter build linux --release
             asset-path: build/linux/x64/release/bundle
             asset-name: demo-flutter-${{ needs.create-release.outputs.version }}-linux-x64.tar.gz
+            setup-qemu: false
+          - os: ubuntu-latest
+            platform: linux
+            arch: arm64
+            target-arch: aarch64
+            artifact-name: demo-flutter-linux-arm64
+            build-command: flutter build linux --release
+            asset-path: build/linux/x64/release/bundle
+            asset-name: demo-flutter-${{ needs.create-release.outputs.version }}-linux-arm64.tar.gz
+            setup-qemu: true
     
     runs-on: ${{ matrix.os }}
     
@@ -71,28 +83,75 @@ jobs:
     - name: Checkout code
       uses: actions/checkout@v4
       
-    - name: Setup Flutter
+    - name: Set up QEMU for ARM64 emulation
+      if: matrix.setup-qemu
+      uses: docker/setup-qemu-action@v3
+      with:
+        platforms: arm64
+        
+    - name: Setup Flutter (x64)
+      if: matrix.arch == 'x64'
       uses: subosito/flutter-action@v2
       with:
         flutter-version: '3.32.5'
         channel: 'stable'
         
-    - name: Install Linux dependencies
-      if: matrix.platform == 'linux'
+    - name: Setup Flutter (ARM64)
+      if: matrix.arch == 'arm64'
+      run: |
+        # ARM64ビルドのためのクロスビルド環境設定
+        # Dockerを使用してARM64環境でFlutterをセットアップ
+        docker run --rm --privileged multiarch/qemu-user-static --reset -p yes
+        
+        # ARM64用のDockerコンテナでビルド
+        docker run --rm -v $PWD:/workspace -w /workspace --platform linux/arm64 \
+          ubuntu:22.04 bash -c "
+          set -e
+          apt-get update -y
+          apt-get install -y curl git unzip xz-utils zip libglu1-mesa ninja-build \
+                             cmake pkg-config libgtk-3-dev libglib2.0-dev \
+                             libcairo2-dev libpango1.0-dev libgdk-pixbuf2.0-dev \
+                             libatk1.0-dev
+          
+          # Flutter SDKをダウンロードしてインストール
+          curl -L https://storage.googleapis.com/flutter_infra_release/releases/stable/linux/flutter_linux_3.32.5-stable.tar.xz -o flutter.tar.xz
+          tar xf flutter.tar.xz
+          export PATH=\$PATH:\$PWD/flutter/bin
+          
+          # Flutter設定
+          flutter config --no-analytics
+          flutter config --enable-linux-desktop
+          flutter doctor
+          
+          # 依存関係とビルド
+          flutter pub get
+          flutter build linux --release
+          
+          # ビルド成果物をtar.gzにアーカイブ
+          cd build/linux/x64/release/bundle
+          tar -czf /workspace/${{ matrix.asset-name }} .
+        "
+        
+    - name: Install Linux dependencies (x64)
+      if: matrix.platform == 'linux' && matrix.arch == 'x64'
       run: |
         sudo apt-get update -y
         sudo apt-get install -y ninja-build libgtk-3-dev
         
-    - name: Enable platform support
+    - name: Enable platform support (x64)
+      if: matrix.arch == 'x64'
       run: flutter config --enable-${{ matrix.platform }}-desktop
       
-    - name: Get dependencies
+    - name: Get dependencies (x64)
+      if: matrix.arch == 'x64'
       run: flutter pub get
       
-    - name: Build application
+    - name: Build application (x64)
+      if: matrix.arch == 'x64'
       run: ${{ matrix.build-command }}
       
-    - name: Create archive
+    - name: Create archive (x64)
+      if: matrix.arch == 'x64'
       run: |
         cd ${{ matrix.asset-path }}
         tar -czf ../../../../../${{ matrix.asset-name }} .
@@ -110,39 +169,80 @@ jobs:
   build-deb:
     name: Build Debian Package
     needs: create-release
+    strategy:
+      matrix:
+        include:
+          - arch: amd64
+            target-arch: x86_64
+            setup-qemu: false
+          - arch: arm64
+            target-arch: aarch64
+            setup-qemu: true
     runs-on: ubuntu-latest
     
     steps:
     - name: Checkout code
       uses: actions/checkout@v4
       
-    - name: Setup Flutter
-      uses: subosito/flutter-action@v2
+    - name: Set up QEMU for ARM64 emulation
+      if: matrix.setup-qemu
+      uses: docker/setup-qemu-action@v3
       with:
-        flutter-version: '3.32.5'
-        channel: 'stable'
+        platforms: arm64
         
-    - name: Install dependencies
+    - name: Setup Flutter and Build (x86_64)
+      if: matrix.arch == 'amd64'
       run: |
+        # Setup Flutter for x86_64
+        curl -L https://storage.googleapis.com/flutter_infra_release/releases/stable/linux/flutter_linux_3.32.5-stable.tar.xz -o flutter.tar.xz
+        tar xf flutter.tar.xz
+        export PATH=$PATH:$PWD/flutter/bin
+        
+        # Install dependencies
         sudo apt-get update -y
         sudo apt-get install -y ninja-build libgtk-3-dev dpkg-dev fakeroot
         
-    - name: Enable Linux desktop
-      run: flutter config --enable-linux-desktop
-      
-    - name: Get dependencies
-      run: flutter pub get
-      
-    - name: Build Linux app
-      run: flutter build linux --release
-      
+        # Build application
+        flutter config --no-analytics
+        flutter config --enable-linux-desktop
+        flutter pub get
+        flutter build linux --release
+        
+    - name: Setup Flutter and Build (ARM64)
+      if: matrix.arch == 'arm64'
+      run: |
+        # ARM64ビルドのためのDockerコンテナ使用
+        docker run --rm --privileged multiarch/qemu-user-static --reset -p yes
+        
+        docker run --rm -v $PWD:/workspace -w /workspace --platform linux/arm64 \
+          ubuntu:22.04 bash -c "
+          set -e
+          apt-get update -y
+          apt-get install -y curl git unzip xz-utils zip libglu1-mesa ninja-build \
+                             cmake pkg-config libgtk-3-dev libglib2.0-dev \
+                             libcairo2-dev libpango1.0-dev libgdk-pixbuf2.0-dev \
+                             libatk1.0-dev dpkg-dev fakeroot
+          
+          # Flutter SDKをダウンロードしてインストール
+          curl -L https://storage.googleapis.com/flutter_infra_release/releases/stable/linux/flutter_linux_3.32.5-stable.tar.xz -o flutter.tar.xz
+          tar xf flutter.tar.xz
+          export PATH=\$PATH:\$PWD/flutter/bin
+          
+          # Flutter設定とビルド
+          flutter config --no-analytics
+          flutter config --enable-linux-desktop
+          flutter doctor
+          flutter pub get
+          flutter build linux --release
+        "
+        
     - name: Create Debian package structure
       id: create-deb
       run: |
         VERSION="${{ needs.create-release.outputs.version }}"
         VERSION_NUM="${VERSION#v}"  # Remove 'v' prefix
         PKG_NAME="demo-flutter"
-        PKG_DIR="${PKG_NAME}_${VERSION_NUM}_amd64"
+        PKG_DIR="${PKG_NAME}_${VERSION_NUM}_${{ matrix.arch }}"
         
         # Create package directory structure
         mkdir -p "${PKG_DIR}/DEBIAN"
@@ -160,7 +260,7 @@ jobs:
         Version: ${VERSION_NUM}
         Section: misc
         Priority: optional
-        Architecture: amd64
+        Architecture: ${{ matrix.arch }}
         Depends: libgtk-3-0, libglib2.0-0, libgcc-s1
         Maintainer: suikan4github <suikan4github@users.noreply.github.com>
         Description: Demo Flutter Application
@@ -241,9 +341,9 @@ jobs:
         fakeroot dpkg-deb --build "${PKG_DIR}"
         
         # Rename to final filename
-        mv "${PKG_DIR}.deb" "${PKG_NAME}-${VERSION}-amd64.deb"
+        mv "${PKG_DIR}.deb" "${PKG_NAME}-${VERSION}-${{ matrix.arch }}.deb"
         
-        echo "package-file=${PKG_NAME}-${VERSION}-amd64.deb" >> $GITHUB_OUTPUT
+        echo "package-file=${PKG_NAME}-${VERSION}-${{ matrix.arch }}.deb" >> $GITHUB_OUTPUT
         
     - name: Upload Debian Package
       uses: actions/upload-release-asset@v1
@@ -258,25 +358,72 @@ jobs:
   build-appimage:
     name: Build AppImage
     needs: create-release
+    strategy:
+      matrix:
+        include:
+          - arch: x86_64
+            appimage-arch: x86_64
+            setup-qemu: false
+          - arch: aarch64
+            appimage-arch: aarch64
+            setup-qemu: true
     runs-on: ubuntu-latest
     
     steps:
     - name: Checkout code
       uses: actions/checkout@v4
       
-    - name: Setup Flutter
-      uses: subosito/flutter-action@v2
+    - name: Set up QEMU for ARM64 emulation
+      if: matrix.setup-qemu
+      uses: docker/setup-qemu-action@v3
       with:
-        flutter-version: '3.32.5'
-        channel: 'stable'
+        platforms: arm64
         
-    - name: Install dependencies
+    - name: Setup Flutter and Build (x86_64)
+      if: matrix.arch == 'x86_64'
       run: |
+        # Setup Flutter for x86_64
+        curl -L https://storage.googleapis.com/flutter_infra_release/releases/stable/linux/flutter_linux_3.32.5-stable.tar.xz -o flutter.tar.xz
+        tar xf flutter.tar.xz
+        export PATH=$PATH:$PWD/flutter/bin
+        
+        # Install dependencies
         sudo apt-get update -y
         sudo apt-get install -y ninja-build libgtk-3-dev imagemagick file
         
-    - name: Enable Linux desktop
-      run: flutter config --enable-linux-desktop
+        # Build application
+        flutter config --no-analytics
+        flutter config --enable-linux-desktop
+        flutter pub get
+        flutter build linux --release
+        
+    - name: Setup Flutter and Build (ARM64)
+      if: matrix.arch == 'aarch64'
+      run: |
+        # ARM64ビルドのためのDockerコンテナ使用
+        docker run --rm --privileged multiarch/qemu-user-static --reset -p yes
+        
+        docker run --rm -v $PWD:/workspace -w /workspace --platform linux/arm64 \
+          ubuntu:22.04 bash -c "
+          set -e
+          apt-get update -y
+          apt-get install -y curl git unzip xz-utils zip libglu1-mesa ninja-build \
+                             cmake pkg-config libgtk-3-dev libglib2.0-dev \
+                             libcairo2-dev libpango1.0-dev libgdk-pixbuf2.0-dev \
+                             libatk1.0-dev imagemagick file
+          
+          # Flutter SDKをダウンロードしてインストール
+          curl -L https://storage.googleapis.com/flutter_infra_release/releases/stable/linux/flutter_linux_3.32.5-stable.tar.xz -o flutter.tar.xz
+          tar xf flutter.tar.xz
+          export PATH=\$PATH:\$PWD/flutter/bin
+          
+          # Flutter設定とビルド
+          flutter config --no-analytics
+          flutter config --enable-linux-desktop
+          flutter doctor
+          flutter pub get
+          flutter build linux --release
+        "
       
     - name: Get dependencies
       run: flutter pub get
@@ -332,14 +479,39 @@ jobs:
         
     - name: Download and run appimagetool
       run: |
-        wget -q https://github.com/AppImage/AppImageKit/releases/download/continuous/appimagetool-x86_64.AppImage
-        chmod +x appimagetool-x86_64.AppImage
-        
-        # Extract appimagetool to avoid FUSE issues in GitHub Actions
-        ./appimagetool-x86_64.AppImage --appimage-extract
-        
-        # Use extracted appimagetool
-        ./squashfs-root/AppRun AppDir demo-flutter-${{ needs.create-release.outputs.version }}-x86_64.AppImage
+        if [ "${{ matrix.arch }}" = "x86_64" ]; then
+          # x86_64の場合
+          wget -q https://github.com/AppImage/AppImageKit/releases/download/continuous/appimagetool-x86_64.AppImage
+          chmod +x appimagetool-x86_64.AppImage
+          
+          # Extract appimagetool to avoid FUSE issues in GitHub Actions
+          ./appimagetool-x86_64.AppImage --appimage-extract
+          
+          # Use extracted appimagetool
+          ./squashfs-root/AppRun AppDir demo-flutter-${{ needs.create-release.outputs.version }}-${{ matrix.arch }}.AppImage
+        else
+          # ARM64の場合、Dockerコンテナ内でAppImageを作成
+          docker run --rm -v $PWD:/workspace -w /workspace --platform linux/arm64 \
+            ubuntu:22.04 bash -c "
+            set -e
+            apt-get update -y
+            apt-get install -y wget file
+            
+            # ARM64用のappimagetoolをダウンロード
+            wget -q https://github.com/AppImage/AppImageKit/releases/download/continuous/appimagetool-aarch64.AppImage -O appimagetool-aarch64.AppImage || {
+              echo 'ARM64 appimagetool not available, using x86_64 version with QEMU'
+              wget -q https://github.com/AppImage/AppImageKit/releases/download/continuous/appimagetool-x86_64.AppImage -O appimagetool-x86_64.AppImage
+              chmod +x appimagetool-x86_64.AppImage
+              ./appimagetool-x86_64.AppImage --appimage-extract
+              ./squashfs-root/AppRun AppDir demo-flutter-${{ needs.create-release.outputs.version }}-${{ matrix.arch }}.AppImage
+              exit 0
+            }
+            
+            chmod +x appimagetool-aarch64.AppImage
+            ./appimagetool-aarch64.AppImage --appimage-extract
+            ./squashfs-root/AppRun AppDir demo-flutter-${{ needs.create-release.outputs.version }}-${{ matrix.arch }}.AppImage
+          "
+        fi
       
     - name: Upload AppImage
       uses: actions/upload-release-asset@v1
@@ -347,24 +519,79 @@ jobs:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
         upload_url: ${{ needs.create-release.outputs.upload_url }}
-        asset_path: demo-flutter-${{ needs.create-release.outputs.version }}-x86_64.AppImage
-        asset_name: demo-flutter-${{ needs.create-release.outputs.version }}-x86_64.AppImage
+        asset_path: demo-flutter-${{ needs.create-release.outputs.version }}-${{ matrix.arch }}.AppImage
+        asset_name: demo-flutter-${{ needs.create-release.outputs.version }}-${{ matrix.arch }}.AppImage
         asset_content_type: application/octet-stream
 
   build-rpm:
     name: Build RPM Package
     needs: create-release
+    strategy:
+      matrix:
+        include:
+          - arch: x86_64
+            target-arch: x86_64
+            setup-qemu: false
+          - arch: aarch64
+            target-arch: aarch64
+            setup-qemu: true
     runs-on: ubuntu-latest
     
     steps:
     - name: Checkout code
       uses: actions/checkout@v4
       
-    - name: Setup Flutter
-      uses: subosito/flutter-action@v2
+    - name: Set up QEMU for ARM64 emulation
+      if: matrix.setup-qemu
+      uses: docker/setup-qemu-action@v3
       with:
-        flutter-version: '3.32.5'
-        channel: 'stable'
+        platforms: arm64
+        
+    - name: Setup Flutter and Build (x86_64)
+      if: matrix.arch == 'x86_64'
+      run: |
+        # Setup Flutter for x86_64
+        curl -L https://storage.googleapis.com/flutter_infra_release/releases/stable/linux/flutter_linux_3.32.5-stable.tar.xz -o flutter.tar.xz
+        tar xf flutter.tar.xz
+        export PATH=$PATH:$PWD/flutter/bin
+        
+        # Install dependencies
+        sudo apt-get update -y
+        sudo apt-get install -y ninja-build libgtk-3-dev rpm desktop-file-utils
+        
+        # Build application
+        flutter config --no-analytics
+        flutter config --enable-linux-desktop
+        flutter pub get
+        flutter build linux --release
+        
+    - name: Setup Flutter and Build (ARM64)
+      if: matrix.arch == 'aarch64'
+      run: |
+        # ARM64ビルドのためのDockerコンテナ使用
+        docker run --rm --privileged multiarch/qemu-user-static --reset -p yes
+        
+        docker run --rm -v $PWD:/workspace -w /workspace --platform linux/arm64 \
+          ubuntu:22.04 bash -c "
+          set -e
+          apt-get update -y
+          apt-get install -y curl git unzip xz-utils zip libglu1-mesa ninja-build \
+                             cmake pkg-config libgtk-3-dev libglib2.0-dev \
+                             libcairo2-dev libpango1.0-dev libgdk-pixbuf2.0-dev \
+                             libatk1.0-dev rpm desktop-file-utils
+          
+          # Flutter SDKをダウンロードしてインストール
+          curl -L https://storage.googleapis.com/flutter_infra_release/releases/stable/linux/flutter_linux_3.32.5-stable.tar.xz -o flutter.tar.xz
+          tar xf flutter.tar.xz
+          export PATH=\$PATH:\$PWD/flutter/bin
+          
+          # Flutter設定とビルド
+          flutter config --no-analytics
+          flutter config --enable-linux-desktop
+          flutter doctor
+          flutter pub get
+          flutter build linux --release
+        "
         
     - name: Install dependencies
       run: |
@@ -516,7 +743,7 @@ jobs:
         echo "RPM basename: $RPM_BASENAME"
         
         # Copy to workspace with absolute path
-        WORKSPACE_RPM="${GITHUB_WORKSPACE}/${PKG_NAME}-${VERSION}-1.x86_64.rpm"
+        WORKSPACE_RPM="${GITHUB_WORKSPACE}/${PKG_NAME}-${VERSION}-1.${{ matrix.arch }}.rpm"
         cp "${RPM_FILE}" "${WORKSPACE_RPM}"
         
         # Verify file exists
@@ -538,31 +765,72 @@ jobs:
   build-snap:
     name: Build Snap Package
     needs: create-release
+    strategy:
+      matrix:
+        include:
+          - arch: amd64
+            target-arch: x86_64
+            setup-qemu: false
+          - arch: arm64
+            target-arch: aarch64
+            setup-qemu: true
     runs-on: ubuntu-latest
     
     steps:
     - name: Checkout code
       uses: actions/checkout@v4
       
-    - name: Setup Flutter
-      uses: subosito/flutter-action@v2
+    - name: Set up QEMU for ARM64 emulation
+      if: matrix.setup-qemu
+      uses: docker/setup-qemu-action@v3
       with:
-        flutter-version: '3.32.5'
-        channel: 'stable'
+        platforms: arm64
         
-    - name: Install dependencies
+    - name: Setup Flutter and Build (x86_64)
+      if: matrix.arch == 'amd64'
       run: |
+        # Setup Flutter for x86_64
+        curl -L https://storage.googleapis.com/flutter_infra_release/releases/stable/linux/flutter_linux_3.32.5-stable.tar.xz -o flutter.tar.xz
+        tar xf flutter.tar.xz
+        export PATH=$PATH:$PWD/flutter/bin
+        
+        # Install dependencies
         sudo apt-get update -y
         sudo apt-get install -y ninja-build libgtk-3-dev
         
-    - name: Enable Linux desktop
-      run: flutter config --enable-linux-desktop
-      
-    - name: Get dependencies
-      run: flutter pub get
-      
-    - name: Build Linux app
-      run: flutter build linux --release
+        # Build application
+        flutter config --no-analytics
+        flutter config --enable-linux-desktop
+        flutter pub get
+        flutter build linux --release
+        
+    - name: Setup Flutter and Build (ARM64)
+      if: matrix.arch == 'arm64'
+      run: |
+        # ARM64ビルドのためのDockerコンテナ使用
+        docker run --rm --privileged multiarch/qemu-user-static --reset -p yes
+        
+        docker run --rm -v $PWD:/workspace -w /workspace --platform linux/arm64 \
+          ubuntu:22.04 bash -c "
+          set -e
+          apt-get update -y
+          apt-get install -y curl git unzip xz-utils zip libglu1-mesa ninja-build \
+                             cmake pkg-config libgtk-3-dev libglib2.0-dev \
+                             libcairo2-dev libpango1.0-dev libgdk-pixbuf2.0-dev \
+                             libatk1.0-dev
+          
+          # Flutter SDKをダウンロードしてインストール
+          curl -L https://storage.googleapis.com/flutter_infra_release/releases/stable/linux/flutter_linux_3.32.5-stable.tar.xz -o flutter.tar.xz
+          tar xf flutter.tar.xz
+          export PATH=\$PATH:\$PWD/flutter/bin
+          
+          # Flutter設定とビルド
+          flutter config --no-analytics
+          flutter config --enable-linux-desktop
+          flutter doctor
+          flutter pub get
+          flutter build linux --release
+        "
       
     - name: Create Snap Package Manually
       run: |
@@ -589,6 +857,8 @@ jobs:
         grade: stable
         confinement: strict
         base: core20
+        architectures:
+          - ${{ matrix.arch }}
         
         apps:
           demo-flutter:
@@ -626,11 +896,11 @@ jobs:
         
         # Create the snap package as a compressed archive
         cd "$SNAP_DIR"
-        tar -czf "../demo-flutter_${VERSION_NUM}_amd64.snap" .
+        tar -czf "../demo-flutter_${VERSION_NUM}_${{ matrix.arch }}.snap" .
         cd ..
         
         # Verify the snap file was created
-        ls -la "demo-flutter_${VERSION_NUM}_amd64.snap"
+        ls -la "demo-flutter_${VERSION_NUM}_${{ matrix.arch }}.snap"
         
     - name: Finalize Snap Package
       id: build-snap
@@ -639,7 +909,7 @@ jobs:
         VERSION_NUM="${VERSION#v}"  # Remove 'v' prefix
         
         # Find the snap file
-        SNAP_FILE="demo-flutter_${VERSION_NUM}_amd64.snap"
+        SNAP_FILE="demo-flutter_${VERSION_NUM}_${{ matrix.arch }}.snap"
         WORKSPACE_SNAP="${GITHUB_WORKSPACE}/${SNAP_FILE}"
         
         # Check if file exists in current directory
@@ -667,5 +937,5 @@ jobs:
       with:
         upload_url: ${{ needs.create-release.outputs.upload_url }}
         asset_path: ${{ steps.build-snap.outputs.snap-file }}
-        asset_name: demo-flutter_${{ needs.create-release.outputs.version }}_amd64.snap
+        asset_name: demo-flutter_${{ needs.create-release.outputs.version }}_${{ matrix.arch }}.snap
         asset_content_type: application/octet-stream

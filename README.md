@@ -9,43 +9,73 @@ Demonstration of flutter application, including packaging and automated releases
 
 ## 📦 Download
 Download the latest release for your platform:
-- **Linux AppImage**: [Latest Release](https://github.com/suikan4github/demo-flutter/releases/latest) - Universal Linux package
-- **Linux .deb**: [Latest Release](https://github.com/suikan4github/demo-flutter/releases/latest) - Ubuntu/Debian package
-- **Linux .rpm**: [Latest Release](https://github.com/suikan4github/demo-flutter/releases/latest) - Red Hat/Fedora/CentOS package
-- **Linux .snap**: [Latest Release](https://github.com/suikan4github/demo-flutter/releases/latest) - Universal Snap package
-- **Linux tar.gz**: [Latest Release](https://github.com/suikan4github/demo-flutter/releases/latest) - Archive format
+- **Linux AppImage**: [Latest Release](https://github.com/suikan4github/demo-flutter/releases/latest) - Universal Linux package (x86_64 & ARM64)
+- **Linux .deb**: [Latest Release](https://github.com/suikan4github/demo-flutter/releases/latest) - Ubuntu/Debian package (amd64 & arm64)
+- **Linux .rpm**: [Latest Release](https://github.com/suikan4github/demo-flutter/releases/latest) - Red Hat/Fedora/CentOS package (x86_64 & aarch64)
+- **Linux .snap**: [Latest Release](https://github.com/suikan4github/demo-flutter/releases/latest) - Universal Snap package (amd64 & arm64)
+- **Linux tar.gz**: [Latest Release](https://github.com/suikan4github/demo-flutter/releases/latest) - Archive format (x86_64 & ARM64)
 
 ### Installation Methods
 
 **AppImage (Universal):**
 ```bash
-chmod +x demo-flutter-v*.AppImage
-./demo-flutter-v*.AppImage
+# For x86_64 architecture
+chmod +x demo-flutter-v*-x86_64.AppImage
+./demo-flutter-v*-x86_64.AppImage
+
+# For ARM64 architecture
+chmod +x demo-flutter-v*-aarch64.AppImage
+./demo-flutter-v*-aarch64.AppImage
 ```
 
 **Debian Package (Ubuntu/Debian):**
 ```bash
+# For x86_64 (amd64) architecture
 sudo dpkg -i demo-flutter-v*-amd64.deb
 sudo apt-get install -f  # Fix dependencies if needed
+
+# For ARM64 architecture
+sudo dpkg -i demo-flutter-v*-arm64.deb
+sudo apt-get install -f  # Fix dependencies if needed
+
 demo-flutter  # Run from anywhere
 ```
 
 **RPM Package (Red Hat/Fedora/CentOS):**
 ```bash
+# For x86_64 architecture
 sudo rpm -i demo-flutter-v*-1.x86_64.rpm
 # or
 sudo dnf install demo-flutter-v*-1.x86_64.rpm  # Fedora
 # or  
 sudo yum install demo-flutter-v*-1.x86_64.rpm  # CentOS/RHEL
+
+# For ARM64 (aarch64) architecture
+sudo rpm -i demo-flutter-v*-1.aarch64.rpm
+# or
+sudo dnf install demo-flutter-v*-1.aarch64.rpm  # Fedora
+# or  
+sudo yum install demo-flutter-v*-1.aarch64.rpm  # CentOS/RHEL
+
 demo-flutter  # Run from anywhere
 ```
 
 **Snap Package (Universal Linux):**
 ```bash
+# For x86_64 (amd64) architecture
 sudo snap install demo-flutter-v*_amd64.snap --dangerous --devmode
+
+# For ARM64 architecture
+sudo snap install demo-flutter-v*_arm64.snap --dangerous --devmode
+
 demo-flutter  # Run from anywhere
 ```
 *Note: --dangerous flag is needed for local snap files not from the official store*
+
+### Architecture Support
+Starting from v1.6.0, this application supports multiple architectures:
+- **x86_64 (amd64)**: Intel/AMD 64-bit processors
+- **ARM64 (aarch64)**: ARM 64-bit processors (Raspberry Pi 4, Apple Silicon via emulation, etc.)
 
 # Details
 This repository contains a simple Flutter application that demonstrates basic functionality and packaging.

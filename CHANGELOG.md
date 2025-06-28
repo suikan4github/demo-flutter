@@ -11,6 +11,26 @@ History of the project development
 ### Security
 ### Known Issue
 
+## [v1.6.0] 2025-01-28
+### Added
+- ARM64 (aarch64) architecture support for Linux desktop builds
+- Cross-compilation support for ARM64 in GitHub Actions workflows
+- ARM64 package generation for all distribution formats:
+  - AppImage for ARM64 architecture
+  - Debian package (.deb) for arm64
+  - RPM package for aarch64
+  - Tarball archive for ARM64
+  - Snap package for arm64
+- Matrix-based build strategy supporting both x86_64 and ARM64 architectures
+- Enhanced release workflow with multi-architecture support
+- ARM64-specific build dependencies and configurations
+
+### Changed
+- Updated GitHub Actions release workflow to use build matrix
+- Modified package naming to include architecture suffix
+- Enhanced CI/CD pipeline to build for multiple architectures
+- Updated documentation with ARM64 installation instructions
+
 ## [v1.5.5] 2025-06-28
 ### Fixed
 - Snap package file movement issue in GitHub Actions
