@@ -11,6 +11,13 @@ History of the project development
 ### Security
 ### Known Issue
 
+## [v1.6.1] 2025-06-28
+### Fixed
+- Flutter PATH configuration issues in ARM64 cross-compilation workflow
+- x86_64 build Flutter SDK setup and environment variable handling
+- GitHub Actions workflow steps execution order for multi-architecture builds
+- AppImage build process PATH resolution for manual Flutter SDK installation
+
 ## [v1.6.0] 2025-06-28
 ### Added
 - ARM64 (aarch64) architecture support for Linux desktop builds
@@ -115,7 +122,8 @@ History of the project development
 ## [v1.0.0] 2025-06-28
 Pre-release version. 
 
-[Unreleased]: https://github.com/suikan4github/demo-flutter/compare/v1.6.0...develop
+[Unreleased]: https://github.com/suikan4github/demo-flutter/compare/v1.6.1...develop
+[v1.6.1]: https://github.com/suikan4github/demo-flutter/compare/v1.6.0...v1.6.1
 [v1.6.0]: https://github.com/suikan4github/demo-flutter/compare/v1.5.5...v1.6.0
 [v1.5.5]: https://github.com/suikan4github/demo-flutter/compare/v1.5.4...v1.5.5
 [v1.5.4]: https://github.com/suikan4github/demo-flutter/compare/v1.5.3...v1.5.4
