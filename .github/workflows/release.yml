@@ -515,13 +515,15 @@ jobs:
         RPM_BASENAME=$(basename "${RPM_FILE}")
         echo "RPM basename: $RPM_BASENAME"
         
-        # Copy to workspace
-        cp "${RPM_FILE}" "./${PKG_NAME}-${VERSION}-1.x86_64.rpm"
+        # Copy to workspace with absolute path
+        WORKSPACE_RPM="${GITHUB_WORKSPACE}/${PKG_NAME}-${VERSION}-1.x86_64.rpm"
+        cp "${RPM_FILE}" "${WORKSPACE_RPM}"
         
         # Verify file exists
-        ls -la "./${PKG_NAME}-${VERSION}-1.x86_64.rpm"
+        ls -la "${WORKSPACE_RPM}"
+        echo "Workspace RPM file: ${WORKSPACE_RPM}"
         
-        echo "rpm-file=${PKG_NAME}-${VERSION}-1.x86_64.rpm" >> $GITHUB_OUTPUT
+        echo "rpm-file=${WORKSPACE_RPM}" >> $GITHUB_OUTPUT
         
     - name: Upload RPM Package
       uses: actions/upload-release-asset@v1
@@ -671,16 +673,18 @@ jobs:
         
         echo "Found snap file: $SNAP_FILE"
         SNAP_NAME="demo-flutter_${VERSION_NUM}_amd64.snap"
+        WORKSPACE_SNAP="${GITHUB_WORKSPACE}/${SNAP_NAME}"
         
         # Rename to standard format if needed
-        if [ "$SNAP_FILE" != "$SNAP_NAME" ]; then
-          mv "$SNAP_FILE" "$SNAP_NAME"
+        if [ "$SNAP_FILE" != "$WORKSPACE_SNAP" ]; then
+          mv "$SNAP_FILE" "$WORKSPACE_SNAP"
         fi
         
         # Verify file exists
-        ls -la "$SNAP_NAME"
+        ls -la "$WORKSPACE_SNAP"
+        echo "Workspace Snap file: ${WORKSPACE_SNAP}"
         
-        echo "snap-file=$SNAP_NAME" >> $GITHUB_OUTPUT
+        echo "snap-file=${WORKSPACE_SNAP}" >> $GITHUB_OUTPUT
         
     - name: Upload Snap Package
       uses: actions/upload-release-asset@v1
