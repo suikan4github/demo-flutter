@@ -140,15 +140,21 @@ jobs:
         
     - name: Enable platform support (x64)
       if: matrix.arch == 'x64'
-      run: flutter config --enable-${{ matrix.platform }}-desktop
+      run: |
+        export PATH=$PATH:$PWD/flutter/bin
+        flutter config --enable-${{ matrix.platform }}-desktop
       
     - name: Get dependencies (x64)
       if: matrix.arch == 'x64'
-      run: flutter pub get
+      run: |
+        export PATH=$PATH:$PWD/flutter/bin
+        flutter pub get
       
     - name: Build application (x64)
       if: matrix.arch == 'x64'
-      run: ${{ matrix.build-command }}
+      run: |
+        export PATH=$PATH:$PWD/flutter/bin
+        ${{ matrix.build-command }}
       
     - name: Create archive (x64)
       if: matrix.arch == 'x64'
@@ -425,14 +431,13 @@ jobs:
           flutter build linux --release
         "
       
-    - name: Get dependencies
-      run: flutter pub get
-      
-    - name: Build Linux app
-      run: flutter build linux --release
-      
     - name: Create AppDir structure
       run: |
+        # Set PATH for x86_64 builds
+        if [ "${{ matrix.arch }}" = "x86_64" ]; then
+          export PATH=$PATH:$PWD/flutter/bin
+        fi
+        
         mkdir -p AppDir/usr/bin
         mkdir -p AppDir/usr/share/applications
         mkdir -p AppDir/usr/share/icons/hicolor/256x256/apps
