@@ -11,12 +11,37 @@ History of the project development
 ### Security
 ### Known Issue
 
-## [v1.6.4] 2025-06-29
+## [v1.6.5] 2025-06-29
 ### Fixed
-- Resolve ARM64 Flutter SDK Dart binary initialization issues
-- Add flutter --version command to trigger Dart SDK setup in ARM64 builds
-- Ensure proper Flutter SDK initialization in Docker ARM64 environment
-- Fix "No such file or directory" errors for Dart binary in ARM64 workflows
+- Simplify ARM64 builds using native GitHub Actions ARM64 runners
+- Replace complex Docker/QEMU cross-compilation with native ARM64 execution
+- Eliminate build complexity and potential issues from cross-compilation
+- Improve build reliability and speed using native ARM64 execution
+- Correct ARM64 build output paths (`build/linux/arm64/release/bundle`)
+- Standardize build process across all package formats (tar.gz, .deb, .rpm, AppImage, Snap)
+
+### Changed
+- Migrate from complex Docker/QEMU cross-compilation to native ARM64 runners
+- Use `ubuntu-24.04-arm64` runner for ARM64 builds instead of emulation
+- Simplify Flutter setup by using `subosito/flutter-action@v2` for all architectures
+
+### Removed
+- Docker-based ARM64 cross-compilation environment
+- QEMU emulation setup for ARM64 builds
+- Manual Flutter SDK download and extraction for ARM64
+- Complex cross-compilation environment variables and toolchain configuration
+- Duplicate ARM64 build steps across different package types
+
+## [v1.6.4] 2025-06-29
+### Changed
+- Temporarily disable ARM64 architecture support for better build stability
+- Focus on x86_64 Linux builds for reliable CI/CD pipeline
+- Remove complex ARM64 cross-compilation setup due to Flutter SDK limitations
+
+### Fixed
+- Simplify release workflow by removing problematic ARM64 builds
+- Ensure stable and reproducible Linux desktop builds
+- Improve overall CI/CD reliability and maintenance
 
 ## [v1.6.3] 2025-06-29
 ### Fixed
@@ -142,7 +167,8 @@ History of the project development
 ## [v1.0.0] 2025-06-28
 Pre-release version. 
 
-[Unreleased]: https://github.com/suikan4github/demo-flutter/compare/v1.6.4...develop
+[Unreleased]: https://github.com/suikan4github/demo-flutter/compare/v1.6.5...develop
+[v1.6.5]: https://github.com/suikan4github/demo-flutter/compare/v1.6.4...v1.6.5
 [v1.6.4]: https://github.com/suikan4github/demo-flutter/compare/v1.6.3...v1.6.4
 [v1.6.3]: https://github.com/suikan4github/demo-flutter/compare/v1.6.2...v1.6.3
 [v1.6.2]: https://github.com/suikan4github/demo-flutter/compare/v1.6.1...v1.6.2
