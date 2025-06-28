@@ -11,6 +11,13 @@ History of the project development
 ### Security
 ### Known Issue
 
+## [v1.5.3] 2025-06-28
+### Fixed
+- Snapcraft installation issues on Ubuntu 24.04
+- Use snap install method instead of apt for snapcraft installation
+- Simplified Snap build process for better reliability
+- Fixed Snap package creation workflow in GitHub Actions
+
 ## [v1.5.2] 2025-06-28
 ### Fixed
 - File path issues in RPM and Snap package upload steps
@@ -75,7 +82,8 @@ History of the project development
 ## [v1.0.0] 2025-06-28
 Pre-release version. 
 
-[Unreleased]: https://github.com/suikan4github/demo-flutter/compare/v1.5.2...develop
+[Unreleased]: https://github.com/suikan4github/demo-flutter/compare/v1.5.3...develop
+[v1.5.3]: https://github.com/suikan4github/demo-flutter/compare/v1.5.2...v1.5.3
 [v1.5.2]: https://github.com/suikan4github/demo-flutter/compare/v1.5.1...v1.5.2
 [v1.5.1]: https://github.com/suikan4github/demo-flutter/compare/v1.5.0...v1.5.1
 [v1.5.0]: https://github.com/suikan4github/demo-flutter/compare/v1.4.2...v1.5.0
