@@ -4,6 +4,9 @@ History of the project development
 ## [Unreleased] yyyy-mm-zz
 
 ### Added
+- [Issue #8](https://github.com/suikan4github/demo-flutter/issues/8) Add tag triggered release.
+
+
 ### Changed
 ### Deprecated
 ### Removed
