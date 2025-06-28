@@ -11,9 +11,18 @@ History of the project development
 ### Security
 ### Known Issue
 
+## [v1.5.1] 2025-06-28
+### Fixed
+- RPM build file path issues and error handling
+- Snap package build configuration and script syntax errors
+- Enhanced debug output for both RPM and Snap build processes
+- Improved error handling in GitHub Actions release workflow
+
 ## [v1.5.0] 2025-06-28
 ### Added
 - [Issue #11](https://github.com/suikan4github/demo-flutter/issues/11) Add snap package to release file. 
+- Snap package (.snap) distribution for universal Linux systems
+- Automated Snap package creation in GitHub Actions release workflow 
 
 ## [v1.4.2] 2025-06-28
 ### Fixed
@@ -59,7 +68,8 @@ History of the project development
 ## [v1.0.0] 2025-06-28
 Pre-release version. 
 
-[Unreleased]: https://github.com/suikan4github/demo-flutter/compare/v1.5.0...develop
+[Unreleased]: https://github.com/suikan4github/demo-flutter/compare/v1.5.1...develop
+[v1.5.1]: https://github.com/suikan4github/demo-flutter/compare/v1.5.0...v1.5.1
 [v1.5.0]: https://github.com/suikan4github/demo-flutter/compare/v1.4.2...v1.5.0
 [v1.4.2]: https://github.com/suikan4github/demo-flutter/compare/v1.4.1...v1.4.2
 [v1.4.1]: https://github.com/suikan4github/demo-flutter/compare/v1.4.0...v1.4.1
