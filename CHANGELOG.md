@@ -11,6 +11,13 @@ History of the project development
 ### Security
 ### Known Issue
 
+## [v1.5.2] 2025-06-28
+### Fixed
+- File path issues in RPM and Snap package upload steps
+- Use absolute paths (GITHUB_WORKSPACE) for asset uploads in GitHub Actions
+- Resolves "file not found" errors during release asset upload
+- Enhanced debugging output for file path verification
+
 ## [v1.5.1] 2025-06-28
 ### Fixed
 - RPM build file path issues and error handling
@@ -68,7 +75,8 @@ History of the project development
 ## [v1.0.0] 2025-06-28
 Pre-release version. 
 
-[Unreleased]: https://github.com/suikan4github/demo-flutter/compare/v1.5.1...develop
+[Unreleased]: https://github.com/suikan4github/demo-flutter/compare/v1.5.2...develop
+[v1.5.2]: https://github.com/suikan4github/demo-flutter/compare/v1.5.1...v1.5.2
 [v1.5.1]: https://github.com/suikan4github/demo-flutter/compare/v1.5.0...v1.5.1
 [v1.5.0]: https://github.com/suikan4github/demo-flutter/compare/v1.4.2...v1.5.0
 [v1.4.2]: https://github.com/suikan4github/demo-flutter/compare/v1.4.1...v1.4.2
