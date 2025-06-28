@@ -9,8 +9,24 @@ Demonstration of flutter application, including packaging and automated releases
 
 ## 📦 Download
 Download the latest release for your platform:
-- **Linux AppImage**: [Latest Release](https://github.com/suikan4github/demo-flutter/releases/latest)
-- **Linux tar.gz**: [Latest Release](https://github.com/suikan4github/demo-flutter/releases/latest)
+- **Linux AppImage**: [Latest Release](https://github.com/suikan4github/demo-flutter/releases/latest) - Universal Linux package
+- **Linux .deb**: [Latest Release](https://github.com/suikan4github/demo-flutter/releases/latest) - Ubuntu/Debian package
+- **Linux tar.gz**: [Latest Release](https://github.com/suikan4github/demo-flutter/releases/latest) - Archive format
+
+### Installation Methods
+
+**AppImage (Universal):**
+```bash
+chmod +x demo-flutter-v*.AppImage
+./demo-flutter-v*.AppImage
+```
+
+**Debian Package (Ubuntu/Debian):**
+```bash
+sudo dpkg -i demo-flutter-v*-amd64.deb
+sudo apt-get install -f  # Fix dependencies if needed
+demo-flutter  # Run from anywhere
+```
 
 # Details
 This repository contains a simple Flutter application that demonstrates basic functionality and packaging.
