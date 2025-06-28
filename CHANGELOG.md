@@ -11,6 +11,13 @@ History of the project development
 ### Security
 ### Known Issue
 
+## [v1.6.2] 2025-06-28
+### Fixed
+- Remove duplicate Flutter setup steps in build-and-upload job
+- Fix redundant flutter pub get and flutter build commands in RPM build workflow
+- Eliminate conflicting workflow steps that caused PATH resolution issues
+- Streamline multi-architecture build process for better reliability
+
 ## [v1.6.1] 2025-06-28
 ### Fixed
 - Flutter PATH configuration issues in ARM64 cross-compilation workflow
@@ -122,7 +129,8 @@ History of the project development
 ## [v1.0.0] 2025-06-28
 Pre-release version. 
 
-[Unreleased]: https://github.com/suikan4github/demo-flutter/compare/v1.6.1...develop
+[Unreleased]: https://github.com/suikan4github/demo-flutter/compare/v1.6.2...develop
+[v1.6.2]: https://github.com/suikan4github/demo-flutter/compare/v1.6.1...v1.6.2
 [v1.6.1]: https://github.com/suikan4github/demo-flutter/compare/v1.6.0...v1.6.1
 [v1.6.0]: https://github.com/suikan4github/demo-flutter/compare/v1.5.5...v1.6.0
 [v1.5.5]: https://github.com/suikan4github/demo-flutter/compare/v1.5.4...v1.5.5
