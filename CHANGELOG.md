@@ -11,6 +11,13 @@ History of the project development
 ### Security
 ### Known Issue
 
+## [v1.5.4] 2025-06-28
+### Changed
+- Removed snapcraft.yaml file and switched to manual Snap package creation
+- Simplified Snap build process to avoid Snapcraft installation issues
+- Hand-crafted Snap package structure for better reliability in GitHub Actions
+- Removed Snapcraft dependencies from build process
+
 ## [v1.5.3] 2025-06-28
 ### Fixed
 - Snapcraft installation issues on Ubuntu 24.04
@@ -82,7 +89,8 @@ History of the project development
 ## [v1.0.0] 2025-06-28
 Pre-release version. 
 
-[Unreleased]: https://github.com/suikan4github/demo-flutter/compare/v1.5.3...develop
+[Unreleased]: https://github.com/suikan4github/demo-flutter/compare/v1.5.4...develop
+[v1.5.4]: https://github.com/suikan4github/demo-flutter/compare/v1.5.3...v1.5.4
 [v1.5.3]: https://github.com/suikan4github/demo-flutter/compare/v1.5.2...v1.5.3
 [v1.5.2]: https://github.com/suikan4github/demo-flutter/compare/v1.5.1...v1.5.2
 [v1.5.1]: https://github.com/suikan4github/demo-flutter/compare/v1.5.0...v1.5.1
