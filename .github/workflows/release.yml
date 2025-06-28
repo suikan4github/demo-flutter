@@ -382,8 +382,14 @@ jobs:
       
     - name: Verify desktop-file-utils installation
       run: |
+        echo "=== Checking desktop-file-utils installation ==="
         which desktop-file-install || (echo "desktop-file-utils not found" && exit 1)
         desktop-file-install --help | head -5
+        echo "=== Checking RPM environment ==="
+        rpm --version
+        echo "=== Checking installed packages ==="
+        dpkg -l | grep desktop-file-utils || echo "desktop-file-utils not found in dpkg"
+        apt list --installed | grep desktop-file-utils || echo "desktop-file-utils not found in apt"
       
     - name: Create RPM package structure
       id: create-rpm
@@ -433,7 +439,8 @@ jobs:
         Source0:        %{name}-%{version}.tar.gz
         Source1:        demo-flutter.desktop
         
-        BuildRequires:  desktop-file-utils
+        # Note: desktop-file-utils is installed in the environment
+        # BuildRequires:  desktop-file-utils (removed to avoid dependency issues)
         Requires:       gtk3, glib2, libgcc
         
         %description
@@ -488,8 +495,8 @@ jobs:
         - Automated build from GitHub Actions
         EOF
         
-        # Build RPM
-        rpmbuild -bb ~/rpmbuild/SPECS/demo-flutter.spec
+        # Build RPM (skip dependency check since we manually installed packages)
+        rpmbuild -bb --nodeps ~/rpmbuild/SPECS/demo-flutter.spec
         
         # Find the generated RPM
         RPM_FILE=$(find ~/rpmbuild/RPMS -name "*.rpm" -type f | head -1)
