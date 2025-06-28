@@ -16,5 +16,5 @@ Hotfix release.
 ## [v1.0.0] 2025-06-28
 Pre-release version. 
 
-[Unreleased]: https://github.com/suikan4github/demo-fultter/compare/v1.0.0...develop
-[v1.0.0]: https://github.com/suikan4github/demo-fultter/compare/v0.9.0...v1.0.0
+[Unreleased]: https://github.com/suikan4github/demo-flutter/compare/v1.0.0...develop
+[v1.0.0]: https://github.com/suikan4github/demo-flutter/compare/v0.9.0...v1.0.0
