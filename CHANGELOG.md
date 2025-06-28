@@ -11,6 +11,13 @@ History of the project development
 ### Security
 ### Known Issue
 
+## [v1.6.4] 2025-06-29
+### Fixed
+- Resolve ARM64 Flutter SDK Dart binary initialization issues
+- Add flutter --version command to trigger Dart SDK setup in ARM64 builds
+- Ensure proper Flutter SDK initialization in Docker ARM64 environment
+- Fix "No such file or directory" errors for Dart binary in ARM64 workflows
+
 ## [v1.6.3] 2025-06-29
 ### Fixed
 - Resolve ARM64 Docker build git safe directory configuration issues
@@ -135,7 +142,8 @@ History of the project development
 ## [v1.0.0] 2025-06-28
 Pre-release version. 
 
-[Unreleased]: https://github.com/suikan4github/demo-flutter/compare/v1.6.3...develop
+[Unreleased]: https://github.com/suikan4github/demo-flutter/compare/v1.6.4...develop
+[v1.6.4]: https://github.com/suikan4github/demo-flutter/compare/v1.6.3...v1.6.4
 [v1.6.3]: https://github.com/suikan4github/demo-flutter/compare/v1.6.2...v1.6.3
 [v1.6.2]: https://github.com/suikan4github/demo-flutter/compare/v1.6.1...v1.6.2
 [v1.6.1]: https://github.com/suikan4github/demo-flutter/compare/v1.6.0...v1.6.1
