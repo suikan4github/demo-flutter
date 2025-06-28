@@ -15,6 +15,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Security
 ### Known Issue
 
+## [v1.6.8] 2025-06-29
+### Fixed
+- Fix GitHub Actions release workflow "Resource not accessible by integration" error
+- Replace default GITHUB_TOKEN with Personal Access Token (PERSONAL_TOKEN) for release operations
+- Resolve insufficient permissions issue when creating releases and uploading assets
+- Improve reliability of automated release process
+
+### Changed
+- Update all release-related GitHub Actions steps to use PERSONAL_TOKEN instead of GITHUB_TOKEN
+- Enhance release workflow security and permissions handling
+- Ensure consistent release creation across all scenarios
+
 ## [v1.6.7] 2025-06-29
 ### Changed
 - Standardize release artifact file naming to `demo-flutter-${version}-linux-amd64.*` format
@@ -208,7 +220,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [v1.0.0] 2025-06-28
 Pre-release version. 
 
-[Unreleased]: https://github.com/suikan4github/demo-flutter/compare/v1.6.7...develop
+[Unreleased]: https://github.com/suikan4github/demo-flutter/compare/v1.6.8...develop
+[v1.6.8]: https://github.com/suikan4github/demo-flutter/compare/v1.6.7...v1.6.8
 [v1.6.7]: https://github.com/suikan4github/demo-flutter/compare/v1.6.6...v1.6.7
 [v1.6.6]: https://github.com/suikan4github/demo-flutter/compare/v1.6.5...v1.6.6
 [v1.6.5]: https://github.com/suikan4github/demo-flutter/compare/v1.6.4...v1.6.5

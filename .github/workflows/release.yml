@@ -44,7 +44,7 @@ jobs:
       id: create_release
       uses: actions/create-release@v1
       env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        GITHUB_TOKEN: ${{ secrets.PERSONAL_TOKEN }}
       with:
         tag_name: ${{ steps.get_version.outputs.version }}
         release_name: Release ${{ steps.get_version.outputs.version }}
@@ -89,7 +89,7 @@ jobs:
     - name: Upload Release Asset
       uses: actions/upload-release-asset@v1
       env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        GITHUB_TOKEN: ${{ secrets.PERSONAL_TOKEN }}
       with:
         upload_url: ${{ needs.create-release.outputs.upload_url }}
         asset_path: demo-flutter-${{ needs.create-release.outputs.version }}-linux-amd64.tar.gz
@@ -235,7 +235,7 @@ jobs:
     - name: Upload Debian Package
       uses: actions/upload-release-asset@v1
       env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        GITHUB_TOKEN: ${{ secrets.PERSONAL_TOKEN }}
       with:
         upload_url: ${{ needs.create-release.outputs.upload_url }}
         asset_path: ${{ steps.create-deb.outputs.package-file }}
@@ -330,7 +330,7 @@ jobs:
     - name: Upload AppImage
       uses: actions/upload-release-asset@v1
       env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        GITHUB_TOKEN: ${{ secrets.PERSONAL_TOKEN }}
       with:
         upload_url: ${{ needs.create-release.outputs.upload_url }}
         asset_path: demo-flutter-${{ needs.create-release.outputs.version }}-linux-amd64.AppImage
@@ -511,7 +511,7 @@ jobs:
     - name: Upload RPM Package
       uses: actions/upload-release-asset@v1
       env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        GITHUB_TOKEN: ${{ secrets.PERSONAL_TOKEN }}
       with:
         upload_url: ${{ needs.create-release.outputs.upload_url }}
         asset_path: ${{ steps.create-rpm.outputs.rpm-file }}
@@ -648,7 +648,7 @@ jobs:
     - name: Upload Snap Package
       uses: actions/upload-release-asset@v1
       env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        GITHUB_TOKEN: ${{ secrets.PERSONAL_TOKEN }}
       with:
         upload_url: ${{ needs.create-release.outputs.upload_url }}
         asset_path: ${{ steps.build-snap.outputs.snap-file }}
