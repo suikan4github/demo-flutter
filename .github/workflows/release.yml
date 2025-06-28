@@ -118,6 +118,10 @@ jobs:
           tar xf flutter.tar.xz
           export PATH=\$PATH:\$PWD/flutter/bin
           
+          # Gitの安全なディレクトリを設定
+          git config --global --add safe.directory /workspace
+          git config --global --add safe.directory /workspace/flutter
+          
           # Flutter設定
           flutter config --no-analytics
           flutter config --enable-linux-desktop
