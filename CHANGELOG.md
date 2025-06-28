@@ -11,13 +11,13 @@ History of the project development
 ### Security
 ### Known Issue## ## 
 
-[v1.2.0] 2025-06-28
+## [v1.2.0] 2025-06-28
 
 ### Added
 - [Issue #8](https://github.com/suikan4github/demo-flutter/issues/8) Add tag triggered release.
 
 
-[v1.1.1] 2025-06-28
+# [v1.1.1] 2025-06-28
 
 ### Added
 - [Issue #4](https://github.com/suikan4github/demo-flutter/issues/4) Add basic CI/CD pipeline.
