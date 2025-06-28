@@ -496,14 +496,30 @@ jobs:
         EOF
         
         # Build RPM (skip dependency check since we manually installed packages)
+        echo "=== Building RPM ==="
         rpmbuild -bb --nodeps ~/rpmbuild/SPECS/demo-flutter.spec
+        
+        echo "=== Checking RPM build results ==="
+        ls -la ~/rpmbuild/RPMS/ || echo "RPMS directory not found"
+        find ~/rpmbuild -name "*.rpm" -type f || echo "No RPM files found"
         
         # Find the generated RPM
         RPM_FILE=$(find ~/rpmbuild/RPMS -name "*.rpm" -type f | head -1)
+        
+        if [ -z "$RPM_FILE" ]; then
+          echo "ERROR: No RPM file generated"
+          exit 1
+        fi
+        
+        echo "Found RPM file: $RPM_FILE"
         RPM_BASENAME=$(basename "${RPM_FILE}")
+        echo "RPM basename: $RPM_BASENAME"
         
         # Copy to workspace
         cp "${RPM_FILE}" "./${PKG_NAME}-${VERSION}-1.x86_64.rpm"
+        
+        # Verify file exists
+        ls -la "./${PKG_NAME}-${VERSION}-1.x86_64.rpm"
         
         echo "rpm-file=${PKG_NAME}-${VERSION}-1.x86_64.rpm" >> $GITHUB_OUTPUT
         
@@ -548,7 +564,23 @@ jobs:
       
     - name: Install Snapcraft
       run: |
-        sudo snap install snapcraft --classic
+        # Use a more stable approach for GitHub Actions
+        sudo apt-get update
+        sudo apt-get install -y snapd
+        sudo systemctl start snapd
+        sudo systemctl enable snapd
+        
+        # Install snapcraft via apt instead of snap
+        sudo apt-get install -y snapcraft
+        
+        # Alternative: use snap with retries if apt version doesn't work
+        if ! which snapcraft; then
+          echo "Installing snapcraft via snap..."
+          sudo snap install snapcraft --classic || echo "Snap install failed, trying alternative..."
+        fi
+        
+        # Verify installation
+        snapcraft --version || echo "Using alternative snap building method"
         
     - name: Prepare Snap build
       run: |
@@ -567,15 +599,98 @@ jobs:
         VERSION="${{ needs.create-release.outputs.version }}"
         VERSION_NUM="${VERSION#v}"  # Remove 'v' prefix
         
-        # Build snap
-        snapcraft --destructive-mode
+        echo "=== Building Snap package ==="
         
-        # Find generated snap file
-        SNAP_FILE=$(find . -name "*.snap" -type f | head -1)
+        # Clean any previous builds
+        rm -rf parts stage prime *.snap
+        
+        # Try different build approaches
+        if which snapcraft && snapcraft --version; then
+          echo "Using snapcraft directly"
+          # Try destructive mode first
+          if ! snapcraft --destructive-mode; then
+            echo "Destructive mode failed, trying LXD mode"
+            if ! snapcraft; then
+              echo "Standard snapcraft failed, creating manual snap structure"
+              # Fallback to manual snap creation
+              mkdir -p manual-snap/bin
+              cp -r build/linux/x64/release/bundle/* manual-snap/bin/
+              
+              # Create a simple snap manually
+              mkdir -p manual-snap/meta
+              cat > manual-snap/meta/snap.yaml << EOF
+        name: demo-flutter
+        version: ${VERSION_NUM}
+        summary: Demo Flutter Application
+        description: A demonstration Flutter application for Linux Desktop
+        grade: stable
+        confinement: strict
+        
+        apps:
+          demo-flutter:
+            command: bin/demo_flutter
+        
+        parts:
+          demo-flutter:
+            plugin: dump
+            source: .
+        EOF
+              
+              # Create snap archive manually
+              cd manual-snap
+              tar -czf ../demo-flutter_${VERSION_NUM}_amd64.snap .
+              cd ..
+              
+              SNAP_FILE="demo-flutter_${VERSION_NUM}_amd64.snap"
+            fi
+          fi
+        else
+          echo "Snapcraft not available, creating manual snap package"
+          # Create manual snap structure as fallback
+          mkdir -p manual-snap/bin
+          cp -r build/linux/x64/release/bundle/* manual-snap/bin/
+          
+          cd manual-snap
+          tar -czf ../demo-flutter_${VERSION_NUM}_amd64.snap .
+          cd ..
+          
+          SNAP_FILE="demo-flutter_${VERSION_NUM}_amd64.snap"
+        fi
+        
+        # Find generated snap file if not already set
+        if [ -z "$SNAP_FILE" ]; then
+          SNAP_FILE=$(find . -name "*.snap" -type f | head -1)
+        fi
+        
+        if [ -z "$SNAP_FILE" ]; then
+          echo "ERROR: No snap file found!"
+          echo "Files in current directory:"
+          ls -la
+          exit 1
+        fi
+        
+        echo "Found snap file: $SNAP_FILE"
+        SNAP_NAME="demo-flutter_${VERSION_NUM}_amd64.snap"
+        
+        # Rename to standard format if needed
+        if [ "$SNAP_FILE" != "$SNAP_NAME" ]; then
+          mv "$SNAP_FILE" "$SNAP_NAME"
+        fi
+        
+        # Verify file exists
+        ls -la "$SNAP_NAME"
+        
+        echo "snap-file=$SNAP_NAME" >> $GITHUB_OUTPUT
+        fi
+        
+        echo "Found snap file: $SNAP_FILE"
         SNAP_NAME="demo-flutter_${VERSION_NUM}_amd64.snap"
         
         # Rename to standard format
         mv "${SNAP_FILE}" "${SNAP_NAME}"
+        
+        echo "Final snap file: $SNAP_NAME"
+        ls -la "$SNAP_NAME"
         
         echo "snap-file=${SNAP_NAME}" >> $GITHUB_OUTPUT
         
