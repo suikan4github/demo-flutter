@@ -11,7 +11,7 @@ History of the project development
 ### Security
 ### Known Issue
 
-## [v1.6.0] 2025-01-28
+## [v1.6.0] 2025-06-28
 ### Added
 - ARM64 (aarch64) architecture support for Linux desktop builds
 - Cross-compilation support for ARM64 in GitHub Actions workflows
@@ -72,12 +72,6 @@ History of the project development
 - Snap package (.snap) distribution for universal Linux systems
 - Automated Snap package creation in GitHub Actions release workflow 
 
-## [v1.4.2] 2025-06-28
-### Fixed
-- RPM build dependencies - removed BuildRequires from spec file
-- Added --nodeps flag to rpmbuild to skip dependency checking
-- Enhanced debug output for RPM build process
-
 ## [v1.4.1] 2025-06-28
 ### Fixed
 - RPM package build failure due to missing desktop-file-utils dependency
@@ -100,6 +94,11 @@ History of the project development
 ### Added
 - [Issue #8](https://github.com/suikan4github/demo-flutter/issues/8) Add tag triggered release.
 
+## [v1.2.1] 2025-06-28
+### Fixed
+- Fix AppImage build FUSE issue in GitHub Actions
+- AppImage extraction process for avoiding FUSE dependency
+- CHANGELOG formatting issues
 
 # [v1.1.1] 2025-06-28
 
@@ -116,7 +115,8 @@ History of the project development
 ## [v1.0.0] 2025-06-28
 Pre-release version. 
 
-[Unreleased]: https://github.com/suikan4github/demo-flutter/compare/v1.5.5...develop
+[Unreleased]: https://github.com/suikan4github/demo-flutter/compare/v1.6.0...develop
+[v1.6.0]: https://github.com/suikan4github/demo-flutter/compare/v1.5.5...v1.6.0
 [v1.5.5]: https://github.com/suikan4github/demo-flutter/compare/v1.5.4...v1.5.5
 [v1.5.4]: https://github.com/suikan4github/demo-flutter/compare/v1.5.3...v1.5.4
 [v1.5.3]: https://github.com/suikan4github/demo-flutter/compare/v1.5.2...v1.5.3
@@ -125,7 +125,8 @@ Pre-release version.
 [v1.5.0]: https://github.com/suikan4github/demo-flutter/compare/v1.4.1...v1.5.0
 [v1.4.1]: https://github.com/suikan4github/demo-flutter/compare/v1.4.0...v1.4.1
 [v1.4.0]: https://github.com/suikan4github/demo-flutter/compare/v1.3.0...v1.4.0
-[v1.3.0]: https://github.com/suikan4github/demo-flutter/compare/v1.2.0...v1.3.0
+[v1.3.0]: https://github.com/suikan4github/demo-flutter/compare/v1.2.1...v1.3.0
+[v1.2.1]: https://github.com/suikan4github/demo-flutter/compare/v1.2.0...v1.2.1
 [v1.2.0]: https://github.com/suikan4github/demo-flutter/compare/v1.1.1...v1.2.0
 [v1.1.1]: https://github.com/suikan4github/demo-flutter/compare/v1.1.0...v1.1.1
 [v1.1.0]: https://github.com/suikan4github/demo-flutter/compare/v1.0.0...v1.1.0
