@@ -11,6 +11,12 @@ History of the project development
 ### Security
 ### Known Issue
 
+## [v1.6.3] 2025-06-29
+### Fixed
+- Resolve ARM64 Docker build git safe directory configuration issues
+- Clean up duplicate lines in snapcraft.yaml for better package integrity
+- Improve ARM64 cross-compilation stability and reliability
+
 ## [v1.6.2] 2025-06-28
 ### Fixed
 - Remove duplicate Flutter setup steps in build-and-upload job
@@ -129,7 +135,8 @@ History of the project development
 ## [v1.0.0] 2025-06-28
 Pre-release version. 
 
-[Unreleased]: https://github.com/suikan4github/demo-flutter/compare/v1.6.2...develop
+[Unreleased]: https://github.com/suikan4github/demo-flutter/compare/v1.6.3...develop
+[v1.6.3]: https://github.com/suikan4github/demo-flutter/compare/v1.6.2...v1.6.3
 [v1.6.2]: https://github.com/suikan4github/demo-flutter/compare/v1.6.1...v1.6.2
 [v1.6.1]: https://github.com/suikan4github/demo-flutter/compare/v1.6.0...v1.6.1
 [v1.6.0]: https://github.com/suikan4github/demo-flutter/compare/v1.5.5...v1.6.0
