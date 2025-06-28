@@ -1,0 +1,68 @@
+name: Code Quality Check
+
+on:
+  pull_request:
+    branches: [ main, develop ]
+    types: [opened, synchronize, reopened]
+
+permissions:
+  contents: read
+  pull-requests: write
+
+jobs:
+  quality-check:
+    name: Code Quality Analysis
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      with:
+        fetch-depth: 0  # For better analysis
+        
+    - name: Setup Flutter
+      uses: subosito/flutter-action@v2
+      with:
+        flutter-version: '3.32.5'
+        channel: 'stable'
+        
+    - name: Get dependencies
+      run: flutter pub get
+      
+    - name: Check for outdated dependencies
+      run: flutter pub outdated
+      continue-on-error: true
+      
+    - name: Check pub dependencies
+      run: flutter pub deps
+      
+    - name: Verify formatting
+      run: |
+        dart format --output=none --set-exit-if-changed . || (
+          echo "❌ Code formatting issues found. Run 'dart format .' to fix."
+          dart format --output=show .
+          exit 1
+        )
+        
+    - name: Analyze project source
+      run: |
+        flutter analyze --fatal-infos --fatal-warnings || (
+          echo "❌ Static analysis issues found."
+          exit 1
+        )
+        
+    - name: Check for unused dependencies
+      run: |
+        dart run dependency_validator || (
+          echo "ℹ️  Consider reviewing unused dependencies"
+          exit 0
+        )
+      continue-on-error: true
+      
+    - name: Security audit
+      run: |
+        dart pub audit || (
+          echo "⚠️  Security vulnerabilities detected"
+          exit 0
+        )
+      continue-on-error: true

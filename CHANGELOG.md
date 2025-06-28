@@ -4,6 +4,9 @@ History of the project development
 ## [Unreleased] yyyy-mm-zz
 
 ### Added
+- [Issue #4](https://github.com/suikan4github/demo-flutter/issues/4) Add basic CI/CD pipeline.
+- [Issue #5](https://github.com/suikan4github/demo-flutter/issues/5) Add GitHub Pages deployment.
+
 ### Changed
 ### Deprecated
 ### Removed
@@ -13,7 +16,7 @@ History of the project development
 
 ## [v1.1.0] 2025-06-28
 ### Added
-- [Issue 2](https://github.com/suikan4github/demo-flutter/issues/2) Add web support.
+- [Issue #2](https://github.com/suikan4github/demo-flutter/issues/2) Add web support.
 
 
 ## [v1.0.0] 2025-06-28
