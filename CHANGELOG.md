@@ -15,6 +15,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Security
 ### Known Issue
 
+## [v1.6.9] 2025-06-29
+### Changed
+- Update README.md to reflect current x86_64 (amd64) architecture support only
+- Remove outdated ARM64 architecture references from installation instructions
+- Clarify that the application is currently built for Linux Desktop x86_64 systems only
+- Update download links and package naming to reflect unified filename format
+
+### Removed
+- ARM64/aarch64 architecture references from README.md documentation
+- Outdated multi-architecture installation instructions
+- Legacy filename examples that don't match current release format
+
 ## [v1.6.8] 2025-06-29
 ### Fixed
 - Fix GitHub Actions release workflow "Resource not accessible by integration" error
@@ -220,7 +232,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [v1.0.0] 2025-06-28
 Pre-release version. 
 
-[Unreleased]: https://github.com/suikan4github/demo-flutter/compare/v1.6.8...develop
+[Unreleased]: https://github.com/suikan4github/demo-flutter/compare/v1.6.9...develop
+[v1.6.9]: https://github.com/suikan4github/demo-flutter/compare/v1.6.8...v1.6.9
 [v1.6.8]: https://github.com/suikan4github/demo-flutter/compare/v1.6.7...v1.6.8
 [v1.6.7]: https://github.com/suikan4github/demo-flutter/compare/v1.6.6...v1.6.7
 [v1.6.6]: https://github.com/suikan4github/demo-flutter/compare/v1.6.5...v1.6.6
