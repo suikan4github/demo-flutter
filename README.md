@@ -1,5 +1,16 @@
 # demo-flutter
-Demonstration of flutter application, including packaging. 
+Demonstration of flutter application, including packaging and automated releases.
+
+[![CI/CD Pipeline](https://github.com/suikan4github/demo-flutter/actions/workflows/ci.yml/badge.svg)](https://github.com/suikan4github/demo-flutter/actions/workflows/ci.yml)
+[![Deploy to GitHub Pages](https://github.com/suikan4github/demo-flutter/actions/workflows/deploy-pages.yml/badge.svg)](https://github.com/suikan4github/demo-flutter/actions/workflows/deploy-pages.yml)
+
+## 🌐 Try it Online
+**Live Demo**: [https://suikan4github.github.io/demo-flutter/](https://suikan4github.github.io/demo-flutter/)
+
+## 📦 Download
+Download the latest release for your platform:
+- **Linux AppImage**: [Latest Release](https://github.com/suikan4github/demo-flutter/releases/latest)
+- **Linux tar.gz**: [Latest Release](https://github.com/suikan4github/demo-flutter/releases/latest)
 
 # Details
 This repository contains a simple Flutter application that demonstrates basic functionality and packaging.
