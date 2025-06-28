@@ -681,18 +681,6 @@ jobs:
         ls -la "$SNAP_NAME"
         
         echo "snap-file=$SNAP_NAME" >> $GITHUB_OUTPUT
-        fi
-        
-        echo "Found snap file: $SNAP_FILE"
-        SNAP_NAME="demo-flutter_${VERSION_NUM}_amd64.snap"
-        
-        # Rename to standard format
-        mv "${SNAP_FILE}" "${SNAP_NAME}"
-        
-        echo "Final snap file: $SNAP_NAME"
-        ls -la "$SNAP_NAME"
-        
-        echo "snap-file=${SNAP_NAME}" >> $GITHUB_OUTPUT
         
     - name: Upload Snap Package
       uses: actions/upload-release-asset@v1
