@@ -11,6 +11,7 @@ Demonstration of flutter application, including packaging and automated releases
 Download the latest release for your platform:
 - **Linux AppImage**: [Latest Release](https://github.com/suikan4github/demo-flutter/releases/latest) - Universal Linux package
 - **Linux .deb**: [Latest Release](https://github.com/suikan4github/demo-flutter/releases/latest) - Ubuntu/Debian package
+- **Linux .rpm**: [Latest Release](https://github.com/suikan4github/demo-flutter/releases/latest) - Red Hat/Fedora/CentOS package
 - **Linux tar.gz**: [Latest Release](https://github.com/suikan4github/demo-flutter/releases/latest) - Archive format
 
 ### Installation Methods
@@ -25,6 +26,16 @@ chmod +x demo-flutter-v*.AppImage
 ```bash
 sudo dpkg -i demo-flutter-v*-amd64.deb
 sudo apt-get install -f  # Fix dependencies if needed
+demo-flutter  # Run from anywhere
+```
+
+**RPM Package (Red Hat/Fedora/CentOS):**
+```bash
+sudo rpm -i demo-flutter-v*-1.x86_64.rpm
+# or
+sudo dnf install demo-flutter-v*-1.x86_64.rpm  # Fedora
+# or  
+sudo yum install demo-flutter-v*-1.x86_64.rpm  # CentOS/RHEL
 demo-flutter  # Run from anywhere
 ```
 

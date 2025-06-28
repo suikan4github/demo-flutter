@@ -4,6 +4,8 @@ History of the project development
 ## [Unreleased] yyyy-mm-zz
 
 ### Added
+- RPM package (.rpm) distribution for Red Hat/Fedora/CentOS systems
+- Automated .rpm package creation in GitHub Actions release workflow
 ### Changed
 ### Deprecated
 ### Removed
@@ -11,8 +13,13 @@ History of the project development
 ### Security
 ### Known Issue## ## 
 
-## [v1.3.0] 2025-06-28
 
+## [v1.4.0] 2025-06-28
+### Added
+- [Issue #10](https://github.com/suikan4github/demo-flutter/issues/10) Add RPM to release file.
+
+
+## [v1.3.0] 2025-06-28
 ### Added
 - [Issue #9](https://github.com/suikan4github/demo-flutter/issues/9) Add tag triggered release.
 
@@ -37,7 +44,8 @@ History of the project development
 ## [v1.0.0] 2025-06-28
 Pre-release version. 
 
-[Unreleased]: https://github.com/suikan4github/demo-flutter/compare/v1.3.0...develop
+[Unreleased]: https://github.com/suikan4github/demo-flutter/compare/v1.4.0...develop
+[v1.4.0]: https://github.com/suikan4github/demo-flutter/compare/v1.3.0...v1.4.0
 [v1.3.0]: https://github.com/suikan4github/demo-flutter/compare/v1.2.0...v1.3.0
 [v1.2.0]: https://github.com/suikan4github/demo-flutter/compare/v1.1.1...v1.2.0
 [v1.1.1]: https://github.com/suikan4github/demo-flutter/compare/v1.1.0...v1.1.1

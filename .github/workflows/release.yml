@@ -350,3 +350,157 @@ jobs:
         asset_path: demo-flutter-${{ needs.create-release.outputs.version }}-x86_64.AppImage
         asset_name: demo-flutter-${{ needs.create-release.outputs.version }}-x86_64.AppImage
         asset_content_type: application/octet-stream
+
+  build-rpm:
+    name: Build RPM Package
+    needs: create-release
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      
+    - name: Setup Flutter
+      uses: subosito/flutter-action@v2
+      with:
+        flutter-version: '3.32.5'
+        channel: 'stable'
+        
+    - name: Install dependencies
+      run: |
+        sudo apt-get update -y
+        sudo apt-get install -y ninja-build libgtk-3-dev rpm
+        
+    - name: Enable Linux desktop
+      run: flutter config --enable-linux-desktop
+      
+    - name: Get dependencies
+      run: flutter pub get
+      
+    - name: Build Linux app
+      run: flutter build linux --release
+      
+    - name: Create RPM package structure
+      id: create-rpm
+      run: |
+        VERSION="${{ needs.create-release.outputs.version }}"
+        VERSION_NUM="${VERSION#v}"  # Remove 'v' prefix
+        PKG_NAME="demo-flutter"
+        
+        # Create RPM build structure
+        mkdir -p ~/rpmbuild/{BUILD,RPMS,SOURCES,SPECS,SRPMS}
+        
+        # Create source tarball
+        TAR_NAME="${PKG_NAME}-${VERSION_NUM}"
+        mkdir -p "/tmp/${TAR_NAME}"
+        cp -r build/linux/x64/release/bundle/* "/tmp/${TAR_NAME}/"
+        
+        # Copy additional files for RPM
+        if [ -f "web/icons/Icon-512.png" ]; then
+          cp web/icons/Icon-512.png "/tmp/${TAR_NAME}/demo-flutter.png"
+        fi
+        
+        cd /tmp
+        tar -czf "${TAR_NAME}.tar.gz" "${TAR_NAME}"
+        mv "${TAR_NAME}.tar.gz" ~/rpmbuild/SOURCES/
+        
+        # Create desktop file
+        cat > ~/rpmbuild/SOURCES/demo-flutter.desktop << EOF
+        [Desktop Entry]
+        Type=Application
+        Name=Demo Flutter
+        Comment=Demo Flutter Application
+        Exec=demo_flutter
+        Icon=demo-flutter
+        Categories=Development;Utility;
+        StartupNotify=true
+        EOF
+        
+        # Create spec file
+        cat > ~/rpmbuild/SPECS/demo-flutter.spec << EOF
+        Name:           demo-flutter
+        Version:        ${VERSION_NUM}
+        Release:        1%{?dist}
+        Summary:        Demo Flutter Application
+        
+        License:        MIT
+        URL:            https://github.com/suikan4github/demo-flutter
+        Source0:        %{name}-%{version}.tar.gz
+        Source1:        demo-flutter.desktop
+        
+        BuildRequires:  desktop-file-utils
+        Requires:       gtk3, glib2, libgcc
+        
+        %description
+        A demonstration Flutter application for Linux Desktop.
+        This package provides a simple counter application built with Flutter.
+        
+        %prep
+        %setup -q
+        
+        %build
+        # Nothing to build, binaries are pre-compiled
+        
+        %install
+        rm -rf %{buildroot}
+        
+        # Install application
+        mkdir -p %{buildroot}%{_bindir}
+        mkdir -p %{buildroot}%{_datadir}/applications
+        mkdir -p %{buildroot}%{_datadir}/icons/hicolor/256x256/apps
+        
+        # Copy application files
+        cp -r * %{buildroot}%{_bindir}/
+        
+        # Install desktop file
+        desktop-file-install --dir=%{buildroot}%{_datadir}/applications %{SOURCE1}
+        
+        # Install icon
+        if [ -f "demo-flutter.png" ]; then
+          cp demo-flutter.png %{buildroot}%{_datadir}/icons/hicolor/256x256/apps/demo-flutter.png
+        fi
+        
+        %files
+        %{_bindir}/*
+        %{_datadir}/applications/demo-flutter.desktop
+        %{_datadir}/icons/hicolor/256x256/apps/demo-flutter.png
+        
+        %post
+        /bin/touch --no-create %{_datadir}/icons/hicolor &>/dev/null || :
+        
+        %postun
+        if [ \$1 -eq 0 ] ; then
+            /bin/touch --no-create %{_datadir}/icons/hicolor &>/dev/null
+            /usr/bin/gtk-update-icon-cache %{_datadir}/icons/hicolor &>/dev/null || :
+        fi
+        
+        %posttrans
+        /usr/bin/gtk-update-icon-cache %{_datadir}/icons/hicolor &>/dev/null || :
+        
+        %changelog
+        * $(date '+%a %b %d %Y') GitHub Actions <actions@github.com> - ${VERSION_NUM}-1
+        - Release ${VERSION}
+        - Automated build from GitHub Actions
+        EOF
+        
+        # Build RPM
+        rpmbuild -bb ~/rpmbuild/SPECS/demo-flutter.spec
+        
+        # Find the generated RPM
+        RPM_FILE=$(find ~/rpmbuild/RPMS -name "*.rpm" -type f | head -1)
+        RPM_BASENAME=$(basename "${RPM_FILE}")
+        
+        # Copy to workspace
+        cp "${RPM_FILE}" "./${PKG_NAME}-${VERSION}-1.x86_64.rpm"
+        
+        echo "rpm-file=${PKG_NAME}-${VERSION}-1.x86_64.rpm" >> $GITHUB_OUTPUT
+        
+    - name: Upload RPM Package
+      uses: actions/upload-release-asset@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        upload_url: ${{ needs.create-release.outputs.upload_url }}
+        asset_path: ${{ steps.create-rpm.outputs.rpm-file }}
+        asset_name: ${{ steps.create-rpm.outputs.rpm-file }}
+        asset_content_type: application/x-rpm
