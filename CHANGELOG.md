@@ -11,6 +11,24 @@ History of the project development
 ### Security
 ### Known Issue
 
+## [v1.6.6] 2025-06-29
+### Changed
+- Temporarily remove ARM64 architecture support for better build stability
+- Focus on x86_64 Linux builds for reliable CI/CD pipeline
+- Simplify release workflow by removing complex multi-architecture builds
+
+### Removed
+- ARM64 build matrix and related workflow complexity
+- ARM64-specific build configurations and dependencies
+- Multi-architecture build strategy to ensure stable releases
+- snapcraft.yaml file and snap/ directory (using manual snap creation instead)
+
+### Fixed
+- Eliminate ARM64 build failures and complex debugging requirements
+- Ensure consistent and reliable x86_64 Linux desktop builds
+- Improve overall CI/CD pipeline reliability and maintenance
+- Remove duplicate workflow steps and matrix configurations
+
 ## [v1.6.5] 2025-06-29
 ### Fixed
 - Simplify ARM64 builds using native GitHub Actions ARM64 runners
@@ -167,7 +185,8 @@ History of the project development
 ## [v1.0.0] 2025-06-28
 Pre-release version. 
 
-[Unreleased]: https://github.com/suikan4github/demo-flutter/compare/v1.6.5...develop
+[Unreleased]: https://github.com/suikan4github/demo-flutter/compare/v1.6.6...develop
+[v1.6.6]: https://github.com/suikan4github/demo-flutter/compare/v1.6.5...v1.6.6
 [v1.6.5]: https://github.com/suikan4github/demo-flutter/compare/v1.6.4...v1.6.5
 [v1.6.4]: https://github.com/suikan4github/demo-flutter/compare/v1.6.3...v1.6.4
 [v1.6.3]: https://github.com/suikan4github/demo-flutter/compare/v1.6.2...v1.6.3

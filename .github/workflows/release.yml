@@ -55,27 +55,7 @@ jobs:
   build-and-upload:
     name: Build and Upload Assets
     needs: create-release
-    strategy:
-      matrix:
-        include:
-          - os: ubuntu-latest
-            platform: linux
-            arch: x64
-            target-arch: x86_64
-            artifact-name: demo-flutter-linux-x64
-            build-command: flutter build linux --release
-            asset-path: build/linux/x64/release/bundle
-            asset-name: demo-flutter-${{ needs.create-release.outputs.version }}-linux-x64.tar.gz
-          - os: ubuntu-24.04-arm64
-            platform: linux
-            arch: arm64
-            target-arch: aarch64
-            artifact-name: demo-flutter-linux-arm64
-            build-command: flutter build linux --release
-            asset-path: build/linux/arm64/release/bundle
-            asset-name: demo-flutter-${{ needs.create-release.outputs.version }}-linux-arm64.tar.gz
-    
-    runs-on: ${{ matrix.os }}
+    runs-on: ubuntu-latest
     
     steps:
     - name: Checkout code
@@ -93,18 +73,18 @@ jobs:
         sudo apt-get install -y ninja-build libgtk-3-dev
         
     - name: Enable platform support
-      run: flutter config --enable-${{ matrix.platform }}-desktop
+      run: flutter config --enable-linux-desktop
       
     - name: Get dependencies
       run: flutter pub get
       
     - name: Build application
-      run: ${{ matrix.build-command }}
+      run: flutter build linux --release
       
     - name: Create archive
       run: |
-        cd ${{ matrix.asset-path }}
-        tar -czf ../../../../../${{ matrix.asset-name }} .
+        cd build/linux/x64/release/bundle
+        tar -czf ../../../../../demo-flutter-${{ needs.create-release.outputs.version }}-linux-x64.tar.gz .
         
     - name: Upload Release Asset
       uses: actions/upload-release-asset@v1
@@ -112,23 +92,14 @@ jobs:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
         upload_url: ${{ needs.create-release.outputs.upload_url }}
-        asset_path: ${{ matrix.asset-name }}
-        asset_name: ${{ matrix.asset-name }}
+        asset_path: demo-flutter-${{ needs.create-release.outputs.version }}-linux-x64.tar.gz
+        asset_name: demo-flutter-${{ needs.create-release.outputs.version }}-linux-x64.tar.gz
         asset_content_type: application/gzip
 
   build-deb:
     name: Build Debian Package
     needs: create-release
-    strategy:
-      matrix:
-        include:
-          - os: ubuntu-latest
-            arch: amd64
-            target-arch: x86_64
-          - os: ubuntu-24.04-arm64
-            arch: arm64
-            target-arch: aarch64
-    runs-on: ${{ matrix.os }}
+    runs-on: ubuntu-latest
     
     steps:
     - name: Checkout code
@@ -158,7 +129,7 @@ jobs:
         VERSION="${{ needs.create-release.outputs.version }}"
         VERSION_NUM="${VERSION#v}"  # Remove 'v' prefix
         PKG_NAME="demo-flutter"
-        PKG_DIR="${PKG_NAME}_${VERSION_NUM}_${{ matrix.arch }}"
+        PKG_DIR="${PKG_NAME}_${VERSION_NUM}_amd64"
         
         # Create package directory structure
         mkdir -p "${PKG_DIR}/DEBIAN"
@@ -167,12 +138,8 @@ jobs:
         mkdir -p "${PKG_DIR}/usr/share/icons/hicolor/256x256/apps"
         mkdir -p "${PKG_DIR}/usr/share/doc/${PKG_NAME}"
         
-        # Copy application files (check both possible paths)
-        if [ "${{ matrix.arch }}" = "arm64" ]; then
-          cp -r build/linux/arm64/release/bundle/* "${PKG_DIR}/usr/bin/"
-        else
-          cp -r build/linux/x64/release/bundle/* "${PKG_DIR}/usr/bin/"
-        fi
+        # Copy application files
+        cp -r build/linux/x64/release/bundle/* "${PKG_DIR}/usr/bin/"
         
         # Create control file
         cat > "${PKG_DIR}/DEBIAN/control" << EOF
@@ -180,7 +147,7 @@ jobs:
         Version: ${VERSION_NUM}
         Section: misc
         Priority: optional
-        Architecture: ${{ matrix.arch }}
+        Architecture: amd64
         Depends: libgtk-3-0, libglib2.0-0, libgcc-s1
         Maintainer: suikan4github <suikan4github@users.noreply.github.com>
         Description: Demo Flutter Application
@@ -261,9 +228,9 @@ jobs:
         fakeroot dpkg-deb --build "${PKG_DIR}"
         
         # Rename to final filename
-        mv "${PKG_DIR}.deb" "${PKG_NAME}-${VERSION}-${{ matrix.arch }}.deb"
+        mv "${PKG_DIR}.deb" "${PKG_NAME}-${VERSION}-amd64.deb"
         
-        echo "package-file=${PKG_NAME}-${VERSION}-${{ matrix.arch }}.deb" >> $GITHUB_OUTPUT
+        echo "package-file=${PKG_NAME}-${VERSION}-amd64.deb" >> $GITHUB_OUTPUT
         
     - name: Upload Debian Package
       uses: actions/upload-release-asset@v1
@@ -278,16 +245,7 @@ jobs:
   build-appimage:
     name: Build AppImage
     needs: create-release
-    strategy:
-      matrix:
-        include:
-          - os: ubuntu-latest
-            arch: x86_64
-            appimage-arch: x86_64
-          - os: ubuntu-24.04-arm64
-            arch: aarch64
-            appimage-arch: aarch64
-    runs-on: ${{ matrix.os }}
+    runs-on: ubuntu-latest
     
     steps:
     - name: Checkout code
@@ -317,12 +275,8 @@ jobs:
         mkdir -p AppDir/usr/share/applications
         mkdir -p AppDir/usr/share/icons/hicolor/256x256/apps
         
-        # Copy application files (check both possible paths)
-        if [ "${{ matrix.arch }}" = "aarch64" ]; then
-          cp -r build/linux/arm64/release/bundle/* AppDir/usr/bin/
-        else
-          cp -r build/linux/x64/release/bundle/* AppDir/usr/bin/
-        fi
+        # Copy application files
+        cp -r build/linux/x64/release/bundle/* AppDir/usr/bin/
         
         # Create desktop file
         cat > AppDir/usr/share/applications/demo-flutter.desktop << EOF
@@ -363,39 +317,15 @@ jobs:
         
     - name: Download and run appimagetool
       run: |
-        if [ "${{ matrix.arch }}" = "x86_64" ]; then
-          # x86_64の場合
-          wget -q https://github.com/AppImage/AppImageKit/releases/download/continuous/appimagetool-x86_64.AppImage
-          chmod +x appimagetool-x86_64.AppImage
-          
-          # Extract appimagetool to avoid FUSE issues in GitHub Actions
-          ./appimagetool-x86_64.AppImage --appimage-extract
-          
-          # Use extracted appimagetool
-          ./squashfs-root/AppRun AppDir demo-flutter-${{ needs.create-release.outputs.version }}-${{ matrix.arch }}.AppImage
-        else
-          # ARM64の場合、Dockerコンテナ内でAppImageを作成
-          docker run --rm -v $PWD:/workspace -w /workspace --platform linux/arm64 \
-            ubuntu:22.04 bash -c "
-            set -e
-            apt-get update -y
-            apt-get install -y wget file
-            
-            # ARM64用のappimagetoolをダウンロード
-            wget -q https://github.com/AppImage/AppImageKit/releases/download/continuous/appimagetool-aarch64.AppImage -O appimagetool-aarch64.AppImage || {
-              echo 'ARM64 appimagetool not available, using x86_64 version with QEMU'
-              wget -q https://github.com/AppImage/AppImageKit/releases/download/continuous/appimagetool-x86_64.AppImage -O appimagetool-x86_64.AppImage
-              chmod +x appimagetool-x86_64.AppImage
-              ./appimagetool-x86_64.AppImage --appimage-extract
-              ./squashfs-root/AppRun AppDir demo-flutter-${{ needs.create-release.outputs.version }}-${{ matrix.arch }}.AppImage
-              exit 0
-            }
-            
-            chmod +x appimagetool-aarch64.AppImage
-            ./appimagetool-aarch64.AppImage --appimage-extract
-            ./squashfs-root/AppRun AppDir demo-flutter-${{ needs.create-release.outputs.version }}-${{ matrix.arch }}.AppImage
-          "
-        fi
+        # x86_64の場合
+        wget -q https://github.com/AppImage/AppImageKit/releases/download/continuous/appimagetool-x86_64.AppImage
+        chmod +x appimagetool-x86_64.AppImage
+        
+        # Extract appimagetool to avoid FUSE issues in GitHub Actions
+        ./appimagetool-x86_64.AppImage --appimage-extract
+        
+        # Use extracted appimagetool
+        ./squashfs-root/AppRun AppDir demo-flutter-${{ needs.create-release.outputs.version }}-x86_64.AppImage
       
     - name: Upload AppImage
       uses: actions/upload-release-asset@v1
@@ -403,23 +333,14 @@ jobs:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
         upload_url: ${{ needs.create-release.outputs.upload_url }}
-        asset_path: demo-flutter-${{ needs.create-release.outputs.version }}-${{ matrix.arch }}.AppImage
-        asset_name: demo-flutter-${{ needs.create-release.outputs.version }}-${{ matrix.arch }}.AppImage
+        asset_path: demo-flutter-${{ needs.create-release.outputs.version }}-x86_64.AppImage
+        asset_name: demo-flutter-${{ needs.create-release.outputs.version }}-x86_64.AppImage
         asset_content_type: application/octet-stream
 
   build-rpm:
     name: Build RPM Package
     needs: create-release
-    strategy:
-      matrix:
-        include:
-          - os: ubuntu-latest
-            arch: x86_64
-            target-arch: x86_64
-          - os: ubuntu-24.04-arm64
-            arch: aarch64
-            target-arch: aarch64
-    runs-on: ${{ matrix.os }}
+    runs-on: ubuntu-latest
     
     steps:
     - name: Checkout code
@@ -465,12 +386,8 @@ jobs:
         TAR_NAME="${PKG_NAME}-${VERSION_NUM}"
         mkdir -p "/tmp/${TAR_NAME}"
         
-        # Copy application files (check both possible paths)
-        if [ "${{ matrix.arch }}" = "aarch64" ]; then
-          cp -r build/linux/arm64/release/bundle/* "/tmp/${TAR_NAME}/"
-        else
-          cp -r build/linux/x64/release/bundle/* "/tmp/${TAR_NAME}/"
-        fi
+        # Copy application files
+        cp -r build/linux/x64/release/bundle/* "/tmp/${TAR_NAME}/"
         
         # Copy additional files for RPM
         if [ -f "web/icons/Icon-512.png" ]; then
@@ -582,7 +499,7 @@ jobs:
         echo "RPM basename: $RPM_BASENAME"
         
         # Copy to workspace with absolute path
-        WORKSPACE_RPM="${GITHUB_WORKSPACE}/${PKG_NAME}-${VERSION}-1.${{ matrix.arch }}.rpm"
+        WORKSPACE_RPM="${GITHUB_WORKSPACE}/${PKG_NAME}-${VERSION}-1.x86_64.rpm"
         cp "${RPM_FILE}" "${WORKSPACE_RPM}"
         
         # Verify file exists
@@ -604,16 +521,7 @@ jobs:
   build-snap:
     name: Build Snap Package
     needs: create-release
-    strategy:
-      matrix:
-        include:
-          - os: ubuntu-latest
-            arch: amd64
-            target-arch: x86_64
-          - os: ubuntu-24.04-arm64
-            arch: arm64
-            target-arch: aarch64
-    runs-on: ${{ matrix.os }}
+    runs-on: ubuntu-latest
     
     steps:
     - name: Checkout code
@@ -648,12 +556,8 @@ jobs:
         SNAP_DIR="snap-package"
         mkdir -p "$SNAP_DIR"/{bin,meta,usr/share/applications,usr/share/icons/hicolor/256x256/apps}
         
-        # Copy application files (check both possible paths)
-        if [ "${{ matrix.arch }}" = "arm64" ]; then
-          cp -r build/linux/arm64/release/bundle/* "$SNAP_DIR/bin/"
-        else
-          cp -r build/linux/x64/release/bundle/* "$SNAP_DIR/bin/"
-        fi
+        # Copy application files
+        cp -r build/linux/x64/release/bundle/* "$SNAP_DIR/bin/"
         
         # Create meta/snap.yaml
         cat > "$SNAP_DIR/meta/snap.yaml" << EOF
@@ -667,7 +571,7 @@ jobs:
         confinement: strict
         base: core20
         architectures:
-          - ${{ matrix.arch }}
+          - amd64
         
         apps:
           demo-flutter:
@@ -705,11 +609,11 @@ jobs:
         
         # Create the snap package as a compressed archive
         cd "$SNAP_DIR"
-        tar -czf "../demo-flutter_${VERSION_NUM}_${{ matrix.arch }}.snap" .
+        tar -czf "../demo-flutter_${VERSION_NUM}_amd64.snap" .
         cd ..
         
         # Verify the snap file was created
-        ls -la "demo-flutter_${VERSION_NUM}_${{ matrix.arch }}.snap"
+        ls -la "demo-flutter_${VERSION_NUM}_amd64.snap"
         
     - name: Finalize Snap Package
       id: build-snap
@@ -718,7 +622,7 @@ jobs:
         VERSION_NUM="${VERSION#v}"  # Remove 'v' prefix
         
         # Find the snap file
-        SNAP_FILE="demo-flutter_${VERSION_NUM}_${{ matrix.arch }}.snap"
+        SNAP_FILE="demo-flutter_${VERSION_NUM}_amd64.snap"
         WORKSPACE_SNAP="${GITHUB_WORKSPACE}/${SNAP_FILE}"
         
         # Check if file exists in current directory
@@ -746,5 +650,5 @@ jobs:
       with:
         upload_url: ${{ needs.create-release.outputs.upload_url }}
         asset_path: ${{ steps.build-snap.outputs.snap-file }}
-        asset_name: demo-flutter_${{ needs.create-release.outputs.version }}_${{ matrix.arch }}.snap
+        asset_name: demo-flutter_${{ needs.create-release.outputs.version }}_amd64.snap
         asset_content_type: application/octet-stream
