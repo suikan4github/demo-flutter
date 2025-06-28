@@ -642,9 +642,16 @@ jobs:
         SNAP_FILE="demo-flutter_${VERSION_NUM}_amd64.snap"
         WORKSPACE_SNAP="${GITHUB_WORKSPACE}/${SNAP_FILE}"
         
-        # Move to final location if needed
-        if [ -f "$SNAP_FILE" ]; then
+        # Check if file exists in current directory
+        if [ -f "$SNAP_FILE" ] && [ "$PWD/$SNAP_FILE" != "$WORKSPACE_SNAP" ]; then
+          echo "Moving snap file to workspace..."
           mv "$SNAP_FILE" "$WORKSPACE_SNAP"
+        elif [ -f "$WORKSPACE_SNAP" ]; then
+          echo "Snap file already in workspace location"
+        else
+          echo "ERROR: Snap file not found!"
+          ls -la
+          exit 1
         fi
         
         # Verify file exists
