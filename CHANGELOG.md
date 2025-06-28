@@ -1,7 +1,11 @@
-# Change log
-History of the project development
+# CHANGELOG
 
-## [Unreleased] yyyy-mm-zz
+All notable changes to this project will be documented in this file.
+
+The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
+and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
+
+## [Unreleased]
 
 ### Added
 ### Changed
@@ -10,6 +14,25 @@ History of the project development
 ### Fixed
 ### Security
 ### Known Issue
+
+## [v1.6.7] 2025-06-29
+### Changed
+- Standardize release artifact file naming to `demo-flutter-${version}-linux-amd64.*` format
+- Unify naming convention across all package types (tar.gz, .deb, .rpm, .AppImage, .snap)
+- Improve consistency and clarity in release artifact identification
+- Update tar.gz filename from `demo-flutter-v1.6.6-linux-x64.tar.gz` to `demo-flutter-v1.6.7-linux-amd64.tar.gz`
+- Update .deb filename from `demo-flutter-v1.6.6-amd64.deb` to `demo-flutter-v1.6.7-linux-amd64.deb`
+- Update AppImage filename from `demo-flutter-v1.6.6-x86_64.AppImage` to `demo-flutter-v1.6.7-linux-amd64.AppImage`
+- Update RPM filename from malformed path to `demo-flutter-v1.6.7-linux-amd64.rpm`
+- Update Snap filename from `demo-flutter_v1.6.6_amd64.snap` to `demo-flutter-v1.6.7-linux-amd64.snap`
+
+### Fixed
+- Enhance release workflow to use consistent file naming patterns
+- Ensure all generated packages follow the same naming structure
+- Improve download experience with predictable file names
+- Fix inconsistent architecture naming (x64, x86_64, amd64) to consistent `amd64`
+- Correct RPM file path issues causing malformed filenames in releases
+- Improve release artifact organization and naming consistency
 
 ## [v1.6.6] 2025-06-29
 ### Changed
@@ -185,7 +208,8 @@ History of the project development
 ## [v1.0.0] 2025-06-28
 Pre-release version. 
 
-[Unreleased]: https://github.com/suikan4github/demo-flutter/compare/v1.6.6...develop
+[Unreleased]: https://github.com/suikan4github/demo-flutter/compare/v1.6.7...develop
+[v1.6.7]: https://github.com/suikan4github/demo-flutter/compare/v1.6.6...v1.6.7
 [v1.6.6]: https://github.com/suikan4github/demo-flutter/compare/v1.6.5...v1.6.6
 [v1.6.5]: https://github.com/suikan4github/demo-flutter/compare/v1.6.4...v1.6.5
 [v1.6.4]: https://github.com/suikan4github/demo-flutter/compare/v1.6.3...v1.6.4

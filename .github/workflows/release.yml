@@ -84,7 +84,7 @@ jobs:
     - name: Create archive
       run: |
         cd build/linux/x64/release/bundle
-        tar -czf ../../../../../demo-flutter-${{ needs.create-release.outputs.version }}-linux-x64.tar.gz .
+        tar -czf ../../../../../demo-flutter-${{ needs.create-release.outputs.version }}-linux-amd64.tar.gz .
         
     - name: Upload Release Asset
       uses: actions/upload-release-asset@v1
@@ -92,8 +92,8 @@ jobs:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
         upload_url: ${{ needs.create-release.outputs.upload_url }}
-        asset_path: demo-flutter-${{ needs.create-release.outputs.version }}-linux-x64.tar.gz
-        asset_name: demo-flutter-${{ needs.create-release.outputs.version }}-linux-x64.tar.gz
+        asset_path: demo-flutter-${{ needs.create-release.outputs.version }}-linux-amd64.tar.gz
+        asset_name: demo-flutter-${{ needs.create-release.outputs.version }}-linux-amd64.tar.gz
         asset_content_type: application/gzip
 
   build-deb:
@@ -228,9 +228,9 @@ jobs:
         fakeroot dpkg-deb --build "${PKG_DIR}"
         
         # Rename to final filename
-        mv "${PKG_DIR}.deb" "${PKG_NAME}-${VERSION}-amd64.deb"
+        mv "${PKG_DIR}.deb" "${PKG_NAME}-${VERSION}-linux-amd64.deb"
         
-        echo "package-file=${PKG_NAME}-${VERSION}-amd64.deb" >> $GITHUB_OUTPUT
+        echo "package-file=${PKG_NAME}-${VERSION}-linux-amd64.deb" >> $GITHUB_OUTPUT
         
     - name: Upload Debian Package
       uses: actions/upload-release-asset@v1
@@ -325,7 +325,7 @@ jobs:
         ./appimagetool-x86_64.AppImage --appimage-extract
         
         # Use extracted appimagetool
-        ./squashfs-root/AppRun AppDir demo-flutter-${{ needs.create-release.outputs.version }}-x86_64.AppImage
+        ./squashfs-root/AppRun AppDir demo-flutter-${{ needs.create-release.outputs.version }}-linux-amd64.AppImage
       
     - name: Upload AppImage
       uses: actions/upload-release-asset@v1
@@ -333,8 +333,8 @@ jobs:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
         upload_url: ${{ needs.create-release.outputs.upload_url }}
-        asset_path: demo-flutter-${{ needs.create-release.outputs.version }}-x86_64.AppImage
-        asset_name: demo-flutter-${{ needs.create-release.outputs.version }}-x86_64.AppImage
+        asset_path: demo-flutter-${{ needs.create-release.outputs.version }}-linux-amd64.AppImage
+        asset_name: demo-flutter-${{ needs.create-release.outputs.version }}-linux-amd64.AppImage
         asset_content_type: application/octet-stream
 
   build-rpm:
@@ -499,14 +499,14 @@ jobs:
         echo "RPM basename: $RPM_BASENAME"
         
         # Copy to workspace with absolute path
-        WORKSPACE_RPM="${GITHUB_WORKSPACE}/${PKG_NAME}-${VERSION}-1.x86_64.rpm"
+        WORKSPACE_RPM="${GITHUB_WORKSPACE}/demo-flutter-${VERSION}-linux-amd64.rpm"
         cp "${RPM_FILE}" "${WORKSPACE_RPM}"
         
         # Verify file exists
         ls -la "${WORKSPACE_RPM}"
         echo "Workspace RPM file: ${WORKSPACE_RPM}"
         
-        echo "rpm-file=${WORKSPACE_RPM}" >> $GITHUB_OUTPUT
+        echo "rpm-file=demo-flutter-${VERSION}-linux-amd64.rpm" >> $GITHUB_OUTPUT
         
     - name: Upload RPM Package
       uses: actions/upload-release-asset@v1
@@ -609,26 +609,28 @@ jobs:
         
         # Create the snap package as a compressed archive
         cd "$SNAP_DIR"
-        tar -czf "../demo-flutter_${VERSION_NUM}_amd64.snap" .
+        tar -czf "../demo-flutter-${VERSION}-linux-amd64.snap" .
         cd ..
         
         # Verify the snap file was created
-        ls -la "demo-flutter_${VERSION_NUM}_amd64.snap"
+        ls -la "demo-flutter-${VERSION}-linux-amd64.snap"
         
     - name: Finalize Snap Package
       id: build-snap
       run: |
         VERSION="${{ needs.create-release.outputs.version }}"
-        VERSION_NUM="${VERSION#v}"  # Remove 'v' prefix
         
         # Find the snap file
-        SNAP_FILE="demo-flutter_${VERSION_NUM}_amd64.snap"
+        SNAP_FILE="demo-flutter-${VERSION}-linux-amd64.snap"
         WORKSPACE_SNAP="${GITHUB_WORKSPACE}/${SNAP_FILE}"
         
         # Check if file exists in current directory
-        if [ -f "$SNAP_FILE" ] && [ "$PWD/$SNAP_FILE" != "$WORKSPACE_SNAP" ]; then
-          echo "Moving snap file to workspace..."
-          mv "$SNAP_FILE" "$WORKSPACE_SNAP"
+        if [ -f "$SNAP_FILE" ]; then
+          echo "Snap file found: $SNAP_FILE"
+          # Move to workspace if not already there
+          if [ "$PWD/$SNAP_FILE" != "$WORKSPACE_SNAP" ]; then
+            mv "$SNAP_FILE" "$WORKSPACE_SNAP"
+          fi
         elif [ -f "$WORKSPACE_SNAP" ]; then
           echo "Snap file already in workspace location"
         else
@@ -641,7 +643,7 @@ jobs:
         ls -la "$WORKSPACE_SNAP"
         echo "Workspace Snap file: ${WORKSPACE_SNAP}"
         
-        echo "snap-file=${WORKSPACE_SNAP}" >> $GITHUB_OUTPUT
+        echo "snap-file=${SNAP_FILE}" >> $GITHUB_OUTPUT
         
     - name: Upload Snap Package
       uses: actions/upload-release-asset@v1
@@ -650,5 +652,5 @@ jobs:
       with:
         upload_url: ${{ needs.create-release.outputs.upload_url }}
         asset_path: ${{ steps.build-snap.outputs.snap-file }}
-        asset_name: demo-flutter_${{ needs.create-release.outputs.version }}_amd64.snap
+        asset_name: ${{ steps.build-snap.outputs.snap-file }}
         asset_content_type: application/octet-stream
