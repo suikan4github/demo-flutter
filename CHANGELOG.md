@@ -11,6 +11,13 @@ History of the project development
 ### Security
 ### Known Issue
 
+## [v1.5.5] 2025-06-28
+### Fixed
+- Snap package file movement issue in GitHub Actions
+- Prevent "same file" error when finalizing Snap package
+- Improved condition checks for file location verification
+- Enhanced error handling and debugging output for Snap build process
+
 ## [v1.5.4] 2025-06-28
 ### Changed
 - Removed snapcraft.yaml file and switched to manual Snap package creation
@@ -89,13 +96,13 @@ History of the project development
 ## [v1.0.0] 2025-06-28
 Pre-release version. 
 
-[Unreleased]: https://github.com/suikan4github/demo-flutter/compare/v1.5.4...develop
+[Unreleased]: https://github.com/suikan4github/demo-flutter/compare/v1.5.5...develop
+[v1.5.5]: https://github.com/suikan4github/demo-flutter/compare/v1.5.4...v1.5.5
 [v1.5.4]: https://github.com/suikan4github/demo-flutter/compare/v1.5.3...v1.5.4
 [v1.5.3]: https://github.com/suikan4github/demo-flutter/compare/v1.5.2...v1.5.3
 [v1.5.2]: https://github.com/suikan4github/demo-flutter/compare/v1.5.1...v1.5.2
 [v1.5.1]: https://github.com/suikan4github/demo-flutter/compare/v1.5.0...v1.5.1
-[v1.5.0]: https://github.com/suikan4github/demo-flutter/compare/v1.4.2...v1.5.0
-[v1.4.2]: https://github.com/suikan4github/demo-flutter/compare/v1.4.1...v1.4.2
+[v1.5.0]: https://github.com/suikan4github/demo-flutter/compare/v1.4.1...v1.5.0
 [v1.4.1]: https://github.com/suikan4github/demo-flutter/compare/v1.4.0...v1.4.1
 [v1.4.0]: https://github.com/suikan4github/demo-flutter/compare/v1.3.0...v1.4.0
 [v1.3.0]: https://github.com/suikan4github/demo-flutter/compare/v1.2.0...v1.3.0
