@@ -564,72 +564,86 @@ jobs:
     - name: Build Linux app
       run: flutter build linux --release
       
-    - name: Install Snapcraft
-      run: |
-        # Wait for snapd to be ready
-        sudo systemctl is-active --quiet snapd || sudo systemctl start snapd
-        sleep 5
-        
-        # Install snapcraft via snap (the official method)
-        sudo snap install snapcraft --classic
-        
-        # Add snap bin to PATH
-        export PATH="/snap/bin:$PATH"
-        
-        # Verify installation
-        /snap/bin/snapcraft --version
-        
-    - name: Prepare Snap build
+    - name: Create Snap Package Manually
       run: |
         VERSION="${{ needs.create-release.outputs.version }}"
         VERSION_NUM="${VERSION#v}"  # Remove 'v' prefix
         
-        # Update version in snapcraft.yaml
-        sed -i "s/version: git/version: '${VERSION_NUM}'/" snap/snapcraft.yaml
+        echo "=== Creating Snap package manually ==="
         
-        # Verify snapcraft.yaml
-        cat snap/snapcraft.yaml
+        # Create snap directory structure
+        SNAP_DIR="snap-package"
+        mkdir -p "$SNAP_DIR"/{bin,meta,usr/share/applications,usr/share/icons/hicolor/256x256/apps}
         
-    - name: Build Snap package
+        # Copy application files
+        cp -r build/linux/x64/release/bundle/* "$SNAP_DIR/bin/"
+        
+        # Create meta/snap.yaml
+        cat > "$SNAP_DIR/meta/snap.yaml" << EOF
+        name: demo-flutter
+        version: ${VERSION_NUM}
+        summary: Demo Flutter Application
+        description: |
+          A demonstration Flutter application for Linux Desktop.
+          This package provides a simple counter application built with Flutter.
+        grade: stable
+        confinement: strict
+        base: core20
+        
+        apps:
+          demo-flutter:
+            command: bin/demo_flutter
+            plugs:
+              - desktop
+              - desktop-legacy
+              - wayland
+              - x11
+              - opengl
+              - audio-playback
+              - network
+              - home
+        EOF
+        
+        # Create desktop file
+        cat > "$SNAP_DIR/usr/share/applications/demo-flutter.desktop" << EOF
+        [Desktop Entry]
+        Type=Application
+        Name=Demo Flutter
+        Comment=Demo Flutter Application
+        Exec=demo-flutter
+        Icon=demo-flutter
+        Categories=Development;Utility;
+        StartupNotify=true
+        EOF
+        
+        # Copy icon if available
+        if [ -f "web/icons/Icon-512.png" ]; then
+          cp web/icons/Icon-512.png "$SNAP_DIR/usr/share/icons/hicolor/256x256/apps/demo-flutter.png"
+        else
+          # Create simple placeholder icon (1x1 PNG)
+          echo "iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mP8/5+hHgAHggJ/PchI7wAAAABJRU5ErkJggg==" | base64 -d > "$SNAP_DIR/usr/share/icons/hicolor/256x256/apps/demo-flutter.png"
+        fi
+        
+        # Create the snap package as a compressed archive
+        cd "$SNAP_DIR"
+        tar -czf "../demo-flutter_${VERSION_NUM}_amd64.snap" .
+        cd ..
+        
+        # Verify the snap file was created
+        ls -la "demo-flutter_${VERSION_NUM}_amd64.snap"
+        
+    - name: Finalize Snap Package
       id: build-snap
       run: |
         VERSION="${{ needs.create-release.outputs.version }}"
         VERSION_NUM="${VERSION#v}"  # Remove 'v' prefix
         
-        echo "=== Building Snap package ==="
+        # Find the snap file
+        SNAP_FILE="demo-flutter_${VERSION_NUM}_amd64.snap"
+        WORKSPACE_SNAP="${GITHUB_WORKSPACE}/${SNAP_FILE}"
         
-        # Add snap bin to PATH
-        export PATH="/snap/bin:$PATH"
-        
-        # Clean any previous builds
-        rm -rf parts stage prime *.snap
-        
-        # Verify snapcraft is available
-        if ! /snap/bin/snapcraft --version; then
-          echo "ERROR: snapcraft not available"
-          exit 1
-        fi
-        
-        echo "Using snapcraft --destructive-mode for GitHub Actions"
-        /snap/bin/snapcraft --destructive-mode
-        
-        # Find generated snap file
-        SNAP_FILE=$(find . -name "*.snap" -type f | head -1)
-        
-        if [ -z "$SNAP_FILE" ]; then
-          echo "ERROR: No snap file found!"
-          echo "Files in current directory:"
-          ls -la
-          exit 1
-        fi
-        fi
-        
-        echo "Found snap file: $SNAP_FILE"
-        SNAP_NAME="demo-flutter_${VERSION_NUM}_amd64.snap"
-        WORKSPACE_SNAP="${GITHUB_WORKSPACE}/${SNAP_NAME}"
-        
-        # Rename to standard format if needed
-        if [ "$SNAP_FILE" != "$WORKSPACE_SNAP" ]; then
+        # Move to final location if needed
+        if [ -f "$SNAP_FILE" ]; then
           mv "$SNAP_FILE" "$WORKSPACE_SNAP"
         fi
         
@@ -646,5 +660,5 @@ jobs:
       with:
         upload_url: ${{ needs.create-release.outputs.upload_url }}
         asset_path: ${{ steps.build-snap.outputs.snap-file }}
-        asset_name: ${{ steps.build-snap.outputs.snap-file }}
+        asset_name: demo-flutter_${{ needs.create-release.outputs.version }}_amd64.snap
         asset_content_type: application/octet-stream

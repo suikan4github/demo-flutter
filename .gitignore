@@ -121,10 +121,6 @@ app.*.symbols
 
 /.errorlog/
 
-# Snap packaging
+# Snap packaging (generated files only)
 *.snap
-/snap/.snapcraft/
-/parts/
-/stage/
-/prime/
-/snap/local/
+snap-package/
