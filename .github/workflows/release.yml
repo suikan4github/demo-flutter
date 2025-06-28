@@ -122,7 +122,8 @@ jobs:
           git config --global --add safe.directory /workspace
           git config --global --add safe.directory /workspace/flutter
           
-          # Flutter設定
+          # Flutter設定（初回実行でDart SDKを初期化）
+          flutter --version  # This triggers Dart SDK initialization
           flutter config --no-analytics
           flutter config --enable-linux-desktop
           flutter doctor
@@ -238,7 +239,12 @@ jobs:
           tar xf flutter.tar.xz
           export PATH=\$PATH:\$PWD/flutter/bin
           
-          # Flutter設定とビルド
+          # Gitの安全なディレクトリを設定
+          git config --global --add safe.directory /workspace
+          git config --global --add safe.directory /workspace/flutter
+          
+          # Flutter設定とビルド（初回実行でDart SDKを初期化）
+          flutter --version  # This triggers Dart SDK initialization
           flutter config --no-analytics
           flutter config --enable-linux-desktop
           flutter doctor
@@ -427,7 +433,12 @@ jobs:
           tar xf flutter.tar.xz
           export PATH=\$PATH:\$PWD/flutter/bin
           
-          # Flutter設定とビルド
+          # Gitの安全なディレクトリを設定
+          git config --global --add safe.directory /workspace
+          git config --global --add safe.directory /workspace/flutter
+          
+          # Flutter設定とビルド（初回実行でDart SDKを初期化）
+          flutter --version  # This triggers Dart SDK initialization
           flutter config --no-analytics
           flutter config --enable-linux-desktop
           flutter doctor
@@ -594,7 +605,12 @@ jobs:
           tar xf flutter.tar.xz
           export PATH=\$PATH:\$PWD/flutter/bin
           
-          # Flutter設定とビルド
+          # Gitの安全なディレクトリを設定
+          git config --global --add safe.directory /workspace
+          git config --global --add safe.directory /workspace/flutter
+          
+          # Flutter設定とビルド（初回実行でDart SDKを初期化）
+          flutter --version  # This triggers Dart SDK initialization
           flutter config --no-analytics
           flutter config --enable-linux-desktop
           flutter doctor
@@ -819,7 +835,12 @@ jobs:
           tar xf flutter.tar.xz
           export PATH=\$PATH:\$PWD/flutter/bin
           
-          # Flutter設定とビルド
+          # Gitの安全なディレクトリを設定
+          git config --global --add safe.directory /workspace
+          git config --global --add safe.directory /workspace/flutter
+          
+          # Flutter設定とビルド（初回実行でDart SDKを初期化）
+          flutter --version  # This triggers Dart SDK initialization
           flutter config --no-analytics
           flutter config --enable-linux-desktop
           flutter doctor
