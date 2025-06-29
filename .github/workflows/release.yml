@@ -991,3 +991,125 @@ jobs:
         asset_path: ${{ steps.compile-installer.outputs.installer-file }}
         asset_name: ${{ steps.compile-installer.outputs.installer-file }}
         asset_content_type: application/octet-stream
+
+  build-macos-zip:
+    name: Build macOS ZIP Package
+    needs: create-release
+    runs-on: macos-latest
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+        
+    - name: Setup Flutter
+      uses: subosito/flutter-action@v2
+      with:
+        flutter-version: '3.32.5'
+        channel: 'stable'
+        
+    - name: Enable macOS desktop support
+      run: flutter config --enable-macos-desktop
+      
+    - name: Get dependencies
+      run: flutter pub get
+      
+    - name: Build macOS application
+      run: flutter build macos --release
+      
+    - name: Create ZIP archive
+      run: |
+        VERSION="${{ needs.create-release.outputs.version }}"
+        ARCHIVE_NAME="demo-flutter-${VERSION}-macos-amd64.zip"
+        
+        # Navigate to the build output directory
+        cd build/macos/Build/Products/Release
+        
+        # Create ZIP archive of the .app bundle
+        zip -r "../../../../../${ARCHIVE_NAME}" "demo_flutter.app"
+        
+        echo "archive-name=${ARCHIVE_NAME}" >> $GITHUB_OUTPUT
+      id: create-zip
+      
+    - name: Upload macOS ZIP Asset
+      uses: actions/upload-release-asset@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.PERSONAL_TOKEN }}
+      with:
+        upload_url: ${{ needs.create-release.outputs.upload_url }}
+        asset_path: ${{ steps.create-zip.outputs.archive-name }}
+        asset_name: ${{ steps.create-zip.outputs.archive-name }}
+        asset_content_type: application/zip
+
+  build-macos-dmg:
+    name: Build macOS DMG Package
+    needs: create-release
+    runs-on: macos-latest
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+        
+    - name: Setup Flutter
+      uses: subosito/flutter-action@v2
+      with:
+        flutter-version: '3.32.5'
+        channel: 'stable'
+        
+    - name: Enable macOS desktop support
+      run: flutter config --enable-macos-desktop
+      
+    - name: Get dependencies
+      run: flutter pub get
+      
+    - name: Build macOS application
+      run: flutter build macos --release
+      
+    - name: Create DMG package
+      run: |
+        VERSION="${{ needs.create-release.outputs.version }}"
+        VERSION_NUM="${VERSION#v}"  # Remove 'v' prefix
+        DMG_NAME="demo-flutter-${VERSION}-macos-amd64.dmg"
+        
+        # Create a temporary directory for DMG contents
+        DMG_DIR="dmg_temp"
+        mkdir -p "$DMG_DIR"
+        
+        # Copy the .app bundle to the DMG directory
+        cp -R "build/macos/Build/Products/Release/demo_flutter.app" "$DMG_DIR/"
+        
+        # Create Applications symlink for easy installation
+        ln -s /Applications "$DMG_DIR/Applications"
+        
+        # Create a background image directory (optional)
+        mkdir -p "$DMG_DIR/.background"
+        
+        # Create the DMG
+        hdiutil create -volname "Demo Flutter ${VERSION_NUM}" \
+                       -srcfolder "$DMG_DIR" \
+                       -ov -format UDZO \
+                       -imagekey zlib-level=9 \
+                       "$DMG_NAME"
+        
+        # Clean up temporary directory
+        rm -rf "$DMG_DIR"
+        
+        # Verify DMG was created
+        if [ -f "$DMG_NAME" ]; then
+          echo "DMG created successfully: $DMG_NAME"
+          echo "File size: $(du -h "$DMG_NAME" | cut -f1)"
+          echo "dmg-file=$DMG_NAME" >> $GITHUB_OUTPUT
+        else
+          echo "Error: DMG creation failed"
+          exit 1
+        fi
+      id: create-dmg
+      
+    - name: Upload macOS DMG Asset
+      uses: actions/upload-release-asset@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.PERSONAL_TOKEN }}
+      with:
+        upload_url: ${{ needs.create-release.outputs.upload_url }}
+        asset_path: ${{ steps.create-dmg.outputs.dmg-file }}
+        asset_name: ${{ steps.create-dmg.outputs.dmg-file }}
+        asset_content_type: application/x-apple-diskimage

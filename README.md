@@ -20,6 +20,11 @@ Download the latest release for your platform:
 ### Windows Packages
 - **Windows ZIP**: [Latest Release](https://github.com/suikan4github/demo-flutter/releases/latest) - Portable Windows application (x86_64/amd64)
 - **Windows MSIX**: [Latest Release](https://github.com/suikan4github/demo-flutter/releases/latest) - Modern Windows 10/11 package (x86_64/amd64)
+- **Windows Installer**: [Latest Release](https://github.com/suikan4github/demo-flutter/releases/latest) - Professional Windows installer with setup wizard (x86_64/amd64)
+
+### macOS Packages
+- **macOS ZIP**: [Latest Release](https://github.com/suikan4github/demo-flutter/releases/latest) - Portable macOS application bundle (x86_64/amd64)
+- **macOS DMG**: [Latest Release](https://github.com/suikan4github/demo-flutter/releases/latest) - macOS disk image installer (x86_64/amd64)
 
 ### Installation Methods
 
@@ -87,10 +92,35 @@ demo-flutter  # Run from anywhere
 - Go to Settings > Update & Security > For developers
 - Select "Sideload apps" or "Developer mode"
 
+#### macOS Installation
+
+**ZIP Package (Portable):**
+1. Download `demo-flutter-v*-macos-amd64.zip`
+2. Extract the ZIP file to your desired location
+3. Double-click `demo_flutter.app` to run the application
+4. If you see "demo_flutter.app can't be opened because it is from an unidentified developer":
+   - Right-click the app and select "Open"
+   - Click "Open" in the security dialog
+   - Or go to System Preferences > Security & Privacy > General and click "Open Anyway"
+
+*No installation required - fully portable macOS application bundle*
+
+**DMG Package (Recommended):**
+1. Download `demo-flutter-v*-macos-amd64.dmg`
+2. Double-click the DMG file to mount it
+3. Drag `demo_flutter.app` to the Applications folder
+4. Launch from Applications folder or Spotlight search
+5. If you see a security warning, follow the same steps as above
+
+*Professional macOS installation with drag-and-drop to Applications folder*
+
 ### Architecture Support
 This application is built for **x86_64 (amd64)** architecture:
 - **Linux x86_64 (amd64)**: Intel/AMD 64-bit processors, compatible with most modern Linux Desktop systems
 - **Windows x86_64 (amd64)**: Intel/AMD 64-bit processors, compatible with Windows 10/11 (64-bit)
+- **macOS x86_64 (amd64)**: Intel-based Mac computers, compatible with macOS 10.14 (Mojave) and later
+
+**Note:** macOS Apple Silicon (M1/M2) Macs can run x86_64 applications through Rosetta 2 translation.
 
 # Development
 
@@ -120,6 +150,12 @@ This repository contains a simple Flutter application that demonstrates basic fu
 3. Run the application (on Windows):
    ```bash
    flutter run -d windows
+   ```
+
+### macOS Desktop
+3. Run the application (on macOS):
+   ```bash
+   flutter run -d macos
    ```
 
 ### Web
