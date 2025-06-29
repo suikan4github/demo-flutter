@@ -15,6 +15,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Security
 ### Known Issue
 
+## [v1.8.1] 2025-06-29
+### Fixed
+- Fix MSIX package identity_name format error in Windows build
+- Change identity_name from invalid "com.example.demo_flutter" to valid "DemoFlutter.DemoFlutterApp"
+- Resolve MSIX packaging workflow failure due to invalid company name format
+- Ensure MSIX identity follows Microsoft's naming requirements (3-50 characters, alphanumeric/period/dash only)
+
+### Technical Details
+- MSIX identity_name must not use "com" as company prefix
+- Updated to use "DemoFlutter.DemoFlutterApp" format for proper MSIX compliance
+- Fixed GitHub Actions workflow error in build-windows-msix job
+
 ## [v1.8.0] 2025-06-29
 ### Added
 - Windows MSIX package distribution format
@@ -272,7 +284,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [v1.0.0] 2025-06-28
 Pre-release version. 
 
-[Unreleased]: https://github.com/suikan4github/demo-flutter/compare/v1.8.0...develop
+[Unreleased]: https://github.com/suikan4github/demo-flutter/compare/v1.8.1...develop
+[v1.8.1]: https://github.com/suikan4github/demo-flutter/compare/v1.8.0...v1.8.1
 [v1.8.0]: https://github.com/suikan4github/demo-flutter/compare/v1.7.0...v1.8.0
 [v1.7.0]: https://github.com/suikan4github/demo-flutter/compare/v1.6.9...v1.7.0
 [v1.6.9]: https://github.com/suikan4github/demo-flutter/compare/v1.6.8...v1.6.9

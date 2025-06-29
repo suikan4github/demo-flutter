@@ -95,7 +95,7 @@ flutter:
 msix_config:
   display_name: Demo Flutter
   publisher_display_name: Demo Flutter Publisher
-  identity_name: com.example.demo_flutter
+  identity_name: DemoFlutter.DemoFlutterApp
   msix_version: 1.0.0.0
   description: A Flutter demonstration application with cross-platform packaging
   publisher: CN=Demo Flutter Publisher
