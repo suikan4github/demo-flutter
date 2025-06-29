@@ -15,6 +15,20 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Security
 ### Known Issue
 
+## [v1.8.3] 2025-06-29
+### Fixed
+- Fix MSIX AppxManifest.xml invalid FileType configuration error
+- Remove invalid file_extension '.' from MSIX configuration in pubspec.yaml
+- Resolve "violates pattern constraint of '.[^.]+'" error in Windows MSIX build
+- Ensure MSIX manifest file type entries comply with Windows App packaging requirements
+- Fix uap:FileType validation issue in AppxManifest.xml generation
+
+### Technical Details
+- Remove file_extension: '' from msix_config in pubspec.yaml
+- Prevent generation of invalid <uap:FileType>.</uap:FileType> entries
+- Ensure MSIX manifest validation passes for Windows package deployment
+- Fix AppxManifest.xml schema compliance for file associations
+
 ## [v1.8.2] 2025-06-29
 ### Fixed
 - Fix MSIX code-signing certificate issue in Windows build
@@ -298,7 +312,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [v1.0.0] 2025-06-28
 Pre-release version. 
 
-[Unreleased]: https://github.com/suikan4github/demo-flutter/compare/v1.8.2...develop
+[Unreleased]: https://github.com/suikan4github/demo-flutter/compare/v1.8.3...develop
+[v1.8.3]: https://github.com/suikan4github/demo-flutter/compare/v1.8.2...v1.8.3
 [v1.8.2]: https://github.com/suikan4github/demo-flutter/compare/v1.8.1...v1.8.2
 [v1.8.1]: https://github.com/suikan4github/demo-flutter/compare/v1.8.0...v1.8.1
 [v1.8.0]: https://github.com/suikan4github/demo-flutter/compare/v1.7.0...v1.8.0

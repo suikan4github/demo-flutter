@@ -104,4 +104,3 @@ msix_config:
   store: false
   capabilities: 'internetClient,microphone,webcam'
   languages: en-us
-  file_extension: ''
