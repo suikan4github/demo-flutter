@@ -718,12 +718,23 @@ jobs:
     - name: Get dependencies
       run: flutter pub get
       
+    - name: Create self-signed certificate for MSIX
+      run: |
+        # Create a self-signed certificate for MSIX packaging
+        $cert = New-SelfSignedCertificate -Type Custom -Subject "CN=Demo Flutter Publisher" -KeyUsage DigitalSignature -FriendlyName "Demo Flutter MSIX Certificate" -CertStoreLocation "Cert:\CurrentUser\My" -TextExtension @("2.5.29.37={text}1.3.6.1.5.5.7.3.3", "2.5.29.19={text}")
+        
+        # Export the certificate to a .pfx file
+        $password = ConvertTo-SecureString -String "temp_password_123" -Force -AsPlainText
+        Export-PfxCertificate -cert $cert -FilePath "demo_flutter_cert.pfx" -Password $password
+        
+        Write-Host "Self-signed certificate created and exported to demo_flutter_cert.pfx"
+      
     - name: Build Windows application
       run: flutter build windows --release
       
     - name: Create MSIX package
       run: |
-        dart run msix:create --store
+        dart run msix:create
         $version = "${{ needs.create-release.outputs.version }}"
         $msixFile = Get-ChildItem -Name "*.msix" | Select-Object -First 1
         $newName = "demo-flutter-$version-windows-amd64.msix"

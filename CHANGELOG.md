@@ -15,6 +15,20 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Security
 ### Known Issue
 
+## [v1.8.2] 2025-06-29
+### Fixed
+- Fix MSIX code-signing certificate issue in Windows build
+- Replace certificate store reference with self-signed certificate generation
+- Resolve "certificate not found in: STORE" error in GitHub Actions workflow
+- Enable MSIX packaging without requiring pre-installed certificates
+- Use PowerShell New-SelfSignedCertificate for automated certificate creation
+
+### Technical Details
+- Generate self-signed certificate during GitHub Actions workflow execution
+- Export certificate to .pfx file with temporary password for MSIX signing
+- Update certificate_path to point to generated certificate file
+- Enable development/testing MSIX packages without Microsoft Store requirements
+
 ## [v1.8.1] 2025-06-29
 ### Fixed
 - Fix MSIX package identity_name format error in Windows build
@@ -284,7 +298,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [v1.0.0] 2025-06-28
 Pre-release version. 
 
-[Unreleased]: https://github.com/suikan4github/demo-flutter/compare/v1.8.1...develop
+[Unreleased]: https://github.com/suikan4github/demo-flutter/compare/v1.8.2...develop
+[v1.8.2]: https://github.com/suikan4github/demo-flutter/compare/v1.8.1...v1.8.2
 [v1.8.1]: https://github.com/suikan4github/demo-flutter/compare/v1.8.0...v1.8.1
 [v1.8.0]: https://github.com/suikan4github/demo-flutter/compare/v1.7.0...v1.8.0
 [v1.7.0]: https://github.com/suikan4github/demo-flutter/compare/v1.6.9...v1.7.0

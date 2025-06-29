@@ -99,8 +99,9 @@ msix_config:
   msix_version: 1.0.0.0
   description: A Flutter demonstration application with cross-platform packaging
   publisher: CN=Demo Flutter Publisher
-  certificate_path: STORE
-  store: true
+  certificate_path: demo_flutter_cert.pfx
+  certificate_password: temp_password_123
+  store: false
   capabilities: 'internetClient,microphone,webcam'
   languages: en-us
   file_extension: ''
