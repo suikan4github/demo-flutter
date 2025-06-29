@@ -9,13 +9,20 @@ Demonstration of flutter application, including packaging and automated releases
 
 ## 📦 Download
 Download the latest release for your platform:
+
+### Linux Packages
 - **Linux AppImage**: [Latest Release](https://github.com/suikan4github/demo-flutter/releases/latest) - Universal Linux package (x86_64/amd64)
 - **Linux .deb**: [Latest Release](https://github.com/suikan4github/demo-flutter/releases/latest) - Ubuntu/Debian package (amd64)
 - **Linux .rpm**: [Latest Release](https://github.com/suikan4github/demo-flutter/releases/latest) - Red Hat/Fedora/CentOS package (x86_64)
 - **Linux .snap**: [Latest Release](https://github.com/suikan4github/demo-flutter/releases/latest) - Universal Snap package (amd64)
 - **Linux tar.gz**: [Latest Release](https://github.com/suikan4github/demo-flutter/releases/latest) - Archive format (x86_64/amd64)
 
+### Windows Packages
+- **Windows ZIP**: [Latest Release](https://github.com/suikan4github/demo-flutter/releases/latest) - Portable Windows application (x86_64/amd64)
+
 ### Installation Methods
+
+#### Linux Installation
 
 **AppImage (Universal):**
 ```bash
@@ -50,15 +57,25 @@ demo-flutter  # Run from anywhere
 ```
 *Note: --dangerous flag is needed for local snap files not from the official store*
 
+#### Windows Installation
+
+**ZIP Package (Portable):**
+1. Download `demo-flutter-v*-windows-amd64.zip`
+2. Extract the ZIP file to your desired location
+3. Run `demo_flutter.exe` from the extracted folder
+
+*No installation required - fully portable Windows application*
+
 ### Architecture Support
-This application is built for **x86_64 (amd64)** architecture only:
-- **x86_64 (amd64)**: Intel/AMD 64-bit processors
-- Compatible with most modern Linux Desktop systems
+This application is built for **x86_64 (amd64)** architecture:
+- **Linux x86_64 (amd64)**: Intel/AMD 64-bit processors, compatible with most modern Linux Desktop systems
+- **Windows x86_64 (amd64)**: Intel/AMD 64-bit processors, compatible with Windows 10/11 (64-bit)
 
-# Details
-This repository contains a simple Flutter application that demonstrates basic functionality and packaging.
+# Development
 
-# Usage
+This repository contains a simple Flutter application that demonstrates basic functionality and cross-platform packaging.
+
+## Getting Started
 
 1. Clone the repository:
    ```bash
@@ -70,13 +87,21 @@ This repository contains a simple Flutter application that demonstrates basic fu
    flutter pub get
    ```
 
-## Build and run on Linux Desktop
+## Build and Run
+
+### Linux Desktop
 3. Run the application:
    ```bash
-   flutter run
+   flutter run -d linux
    ```
 
-## Build and run on Web
+### Windows Desktop
+3. Run the application (on Windows):
+   ```bash
+   flutter run -d windows
+   ```
+
+### Web
 3. Run the application:
    ```bash
    flutter run -d web-server

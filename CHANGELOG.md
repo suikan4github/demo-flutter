@@ -15,6 +15,25 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Security
 ### Known Issue
 
+## [v1.7.0] 2025-06-29
+### Added
+- Windows platform support with ZIP distribution format
+- Automated Windows build in GitHub Actions release workflow
+- Cross-platform release artifacts with unified naming convention
+- Windows ZIP package: `demo-flutter-${version}-windows-amd64.zip`
+
+### Changed
+- Expand CI/CD pipeline to support multi-platform builds (Linux + Windows)
+- Update release workflow to build for both Linux and Windows platforms
+- Enhance artifact naming to include platform identifier (linux/windows)
+- Improve cross-platform compatibility and distribution strategy
+
+### Technical Details
+- Windows builds use `windows-2022` GitHub Actions runner
+- Flutter Windows desktop build with release configuration
+- Automated ZIP archive creation with all necessary runtime files
+- Consistent filename format across all platforms and package types
+
 ## [v1.6.9] 2025-06-29
 ### Changed
 - Update README.md to reflect current x86_64 (amd64) architecture support only
@@ -232,7 +251,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [v1.0.0] 2025-06-28
 Pre-release version. 
 
-[Unreleased]: https://github.com/suikan4github/demo-flutter/compare/v1.6.9...develop
+[Unreleased]: https://github.com/suikan4github/demo-flutter/compare/v1.7.0...develop
+[v1.7.0]: https://github.com/suikan4github/demo-flutter/compare/v1.6.9...v1.7.0
 [v1.6.9]: https://github.com/suikan4github/demo-flutter/compare/v1.6.8...v1.6.9
 [v1.6.8]: https://github.com/suikan4github/demo-flutter/compare/v1.6.7...v1.6.8
 [v1.6.7]: https://github.com/suikan4github/demo-flutter/compare/v1.6.6...v1.6.7

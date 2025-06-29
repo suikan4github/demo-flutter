@@ -654,3 +654,45 @@ jobs:
         asset_path: ${{ steps.build-snap.outputs.snap-file }}
         asset_name: ${{ steps.build-snap.outputs.snap-file }}
         asset_content_type: application/octet-stream
+
+  build-windows-zip:
+    name: Build Windows ZIP Package
+    needs: create-release
+    runs-on: windows-2022
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+        
+    - name: Setup Flutter
+      uses: subosito/flutter-action@v2
+      with:
+        flutter-version: '3.32.5'
+        channel: 'stable'
+        
+    - name: Enable Windows desktop support
+      run: flutter config --enable-windows-desktop
+      
+    - name: Get dependencies
+      run: flutter pub get
+      
+    - name: Build Windows application
+      run: flutter build windows --release
+      
+    - name: Create ZIP archive
+      run: |
+        $version = "${{ needs.create-release.outputs.version }}"
+        $archiveName = "demo-flutter-$version-windows-amd64.zip"
+        Compress-Archive -Path "build\windows\x64\runner\Release\*" -DestinationPath $archiveName
+        echo "archive-name=$archiveName" >> $env:GITHUB_OUTPUT
+      id: create-zip
+      
+    - name: Upload Windows ZIP Asset
+      uses: actions/upload-release-asset@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.PERSONAL_TOKEN }}
+      with:
+        upload_url: ${{ needs.create-release.outputs.upload_url }}
+        asset_path: ${{ steps.create-zip.outputs.archive-name }}
+        asset_name: ${{ steps.create-zip.outputs.archive-name }}
+        asset_content_type: application/zip
