@@ -833,12 +833,6 @@ jobs:
         $innoPath = "C:\Program Files (x86)\Inno Setup 6\iscc.exe"
         if (Test-Path $innoPath) {
           Write-Host "Inno Setup installed successfully at: $innoPath"
-          # Test with help flag to verify functionality (ignore exit code as help returns 1)
-          try {
-            & $innoPath "/?" 2>&1 | Out-Null
-          } catch {
-            # Help command may return non-zero exit code, but that's expected
-          }
           Write-Host "Inno Setup verification completed successfully"
         } else {
           Write-Error "Inno Setup installation failed"

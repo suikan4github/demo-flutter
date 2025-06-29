@@ -15,6 +15,20 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Security
 ### Known Issue
 
+## [v1.9.2] 2025-06-29
+### Fixed
+- Completely remove problematic Inno Setup help command execution from workflow
+- Simplify Inno Setup verification to only check file existence
+- Eliminate PowerShell exit code issues from external process execution
+- Ensure Windows Installer build workflow completes successfully
+- Remove unnecessary command validation that was causing CI/CD failures
+
+### Technical Details
+- Remove `iscc.exe /?` execution that was returning exit code 1
+- Simplify verification to only use `Test-Path` for installation confirmation
+- Prevent PowerShell from propagating external command exit codes
+- Focus on essential validation without problematic command execution
+
 ## [v1.9.1] 2025-06-29
 ### Fixed
 - Fix Inno Setup installation verification in Windows Installer build workflow
@@ -401,7 +415,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [v1.0.0] 2025-06-28
 Pre-release version. 
 
-[Unreleased]: https://github.com/suikan4github/demo-flutter/compare/v1.9.1...develop
+[Unreleased]: https://github.com/suikan4github/demo-flutter/compare/v1.9.2...develop
+[v1.9.2]: https://github.com/suikan4github/demo-flutter/compare/v1.9.1...v1.9.2
 [v1.9.1]: https://github.com/suikan4github/demo-flutter/compare/v1.9.0...v1.9.1
 [v1.9.0]: https://github.com/suikan4github/demo-flutter/compare/v1.8.6...v1.9.0
 [v1.8.6]: https://github.com/suikan4github/demo-flutter/compare/v1.8.5...v1.8.6
