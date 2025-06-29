@@ -799,3 +799,187 @@ jobs:
         asset_path: ${{ steps.create-msix.outputs.msix-file }}
         asset_name: ${{ steps.create-msix.outputs.msix-file }}
         asset_content_type: application/octet-stream
+
+  build-windows-installer:
+    name: Build Windows Installer (Inno Setup)
+    needs: create-release
+    runs-on: windows-2022
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+        
+    - name: Setup Flutter
+      uses: subosito/flutter-action@v2
+      with:
+        flutter-version: '3.32.5'
+        channel: 'stable'
+        
+    - name: Enable Windows desktop support
+      run: flutter config --enable-windows-desktop
+      
+    - name: Get dependencies
+      run: flutter pub get
+      
+    - name: Build Windows application
+      run: flutter build windows --release
+      
+    - name: Setup Inno Setup
+      run: |
+        Write-Host "Installing Inno Setup via Chocolatey..."
+        choco install innosetup -y
+        
+        # Verify installation
+        $innoPath = "C:\Program Files (x86)\Inno Setup 6\iscc.exe"
+        if (Test-Path $innoPath) {
+          Write-Host "Inno Setup installed successfully at: $innoPath"
+          & $innoPath
+        } else {
+          Write-Error "Inno Setup installation failed"
+          exit 1
+        }
+      
+    - name: Create Inno Setup Script
+      run: |
+        $version = "${{ needs.create-release.outputs.version }}"
+        $versionNum = $version -replace '^v', ''  # Remove 'v' prefix
+        
+        # Create the Inno Setup script
+        $issContent = @"
+        [Setup]
+        AppName=Demo Flutter
+        AppVersion=$versionNum
+        AppVerName=Demo Flutter $versionNum
+        AppPublisher=Demo Flutter Publisher
+        AppPublisherURL=https://github.com/suikan4github/demo-flutter
+        AppSupportURL=https://github.com/suikan4github/demo-flutter/issues
+        AppUpdatesURL=https://github.com/suikan4github/demo-flutter/releases
+        AppId={{A1B2C3D4-E5F6-7890-ABCD-EF1234567890}
+        DefaultDirName={autopf}\Demo Flutter
+        DefaultGroupName=Demo Flutter
+        DisableProgramGroupPage=yes
+        LicenseFile=LICENSE
+        OutputDir=.
+        OutputBaseFilename=demo-flutter-$version-windows-amd64-setup
+        UninstallDisplayIcon={app}\demo_flutter.exe
+        UninstallDisplayName=Demo Flutter
+        SetupIconFile=web\favicon.png
+        Compression=lzma
+        SolidCompression=yes
+        PrivilegesRequired=admin
+        ArchitecturesAllowed=x64
+        ArchitecturesInstallIn64BitMode=x64
+        
+        [Languages]
+        Name: "english"; MessagesFile: "compiler:Default.isl"
+        Name: "japanese"; MessagesFile: "compiler:Languages\Japanese.isl"
+        
+        [Tasks]
+        Name: "desktopicon"; Description: "{cm:CreateDesktopIcon}"; GroupDescription: "{cm:AdditionalIcons}"; Flags: unchecked
+        Name: "quicklaunchicon"; Description: "{cm:CreateQuickLaunchIcon}"; GroupDescription: "{cm:AdditionalIcons}"; Flags: unchecked; OnlyBelowVersion: 6.1; Check: not IsAdminInstallMode
+        
+        [Files]
+        Source: "build\windows\x64\runner\Release\*"; DestDir: "{app}"; Flags: ignoreversion recursesubdirs createallsubdirs
+        ; NOTE: Don't use "Flags: ignoreversion" on any shared system files
+        
+        [Icons]
+        Name: "{group}\Demo Flutter"; Filename: "{app}\demo_flutter.exe"
+        Name: "{group}\{cm:ProgramOnTheWeb,Demo Flutter}"; Filename: "https://github.com/suikan4github/demo-flutter"
+        Name: "{group}\{cm:UninstallProgram,Demo Flutter}"; Filename: "{uninstallexe}"
+        Name: "{autodesktop}\Demo Flutter"; Filename: "{app}\demo_flutter.exe"; Tasks: desktopicon
+        Name: "{userappdata}\Microsoft\Internet Explorer\Quick Launch\Demo Flutter"; Filename: "{app}\demo_flutter.exe"; Tasks: quicklaunchicon
+        
+        [Run]
+        Filename: "{app}\demo_flutter.exe"; Description: "{cm:LaunchProgram,Demo Flutter}"; Flags: nowait postinstall skipifsilent
+        
+        [UninstallDelete]
+        Type: filesandordirs; Name: "{app}\data"
+        
+        [Code]
+        function GetUninstallString(): String;
+        var
+          sUnInstPath: String;
+          sUnInstallString: String;
+        begin
+          sUnInstPath := ExpandConstant('Software\Microsoft\Windows\CurrentVersion\Uninstall\{{A1B2C3D4-E5F6-7890-ABCD-EF1234567890}_is1');
+          sUnInstallString := '';
+          if not RegQueryStringValue(HKLM, sUnInstPath, 'UninstallString', sUnInstallString) then
+            RegQueryStringValue(HKCU, sUnInstPath, 'UninstallString', sUnInstallString);
+          Result := sUnInstallString;
+        end;
+        
+        function IsUpgrade(): Boolean;
+        begin
+          Result := (GetUninstallString() <> '');
+        end;
+        
+        function UnInstallOldVersion(): Integer;
+        var
+          sUnInstallString: String;
+          iResultCode: Integer;
+        begin
+          Result := 0;
+          if RegValueExists(HKEY_LOCAL_MACHINE,'Software\Microsoft\Windows\CurrentVersion\Uninstall\{{A1B2C3D4-E5F6-7890-ABCD-EF1234567890}_is1', 'UninstallString') then
+          begin
+            sUnInstallString := GetUninstallString();
+            sUnInstallString := RemoveQuotes(sUnInstallString);
+            if Exec(sUnInstallString, '/SILENT /NORESTART /SUPPRESSMSGBOXES','', SW_HIDE, ewWaitUntilTerminated, iResultCode) then
+              Result := 3
+            else
+              Result := 2;
+          end else
+            Result := 1;
+        end;
+        
+        procedure CurStepChanged(CurStep: TSetupStep);
+        begin
+          if (CurStep=ssInstall) then
+          begin
+            if (IsUpgrade()) then
+            begin
+              UnInstallOldVersion();
+            end;
+          end;
+        end;
+        
+        "@
+        
+        # Write the script to file
+        $issContent | Out-File -FilePath "demo-flutter.iss" -Encoding UTF8
+        
+        Write-Host "Inno Setup script created:"
+        Get-Content "demo-flutter.iss" | Select-Object -First 20
+        
+    - name: Compile Installer
+      run: |
+        $version = "${{ needs.create-release.outputs.version }}"
+        
+        Write-Host "Compiling installer with Inno Setup..."
+        $innoPath = "C:\Program Files (x86)\Inno Setup 6\iscc.exe"
+        
+        # Compile the installer
+        & $innoPath "demo-flutter.iss"
+        
+        # Check if installer was created
+        $expectedFile = "demo-flutter-$version-windows-amd64-setup.exe"
+        if (Test-Path $expectedFile) {
+          Write-Host "Installer created successfully: $expectedFile"
+          Write-Host "File size: $((Get-Item $expectedFile).Length) bytes"
+          echo "installer-file=$expectedFile" >> $env:GITHUB_OUTPUT
+        } else {
+          Write-Error "Installer compilation failed - file not found: $expectedFile"
+          Write-host "Available files:"
+          Get-ChildItem -Name "*.exe"
+          exit 1
+        }
+      id: compile-installer
+        
+    - name: Upload Windows Installer Asset
+      uses: actions/upload-release-asset@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.PERSONAL_TOKEN }}
+      with:
+        upload_url: ${{ needs.create-release.outputs.upload_url }}
+        asset_path: ${{ steps.compile-installer.outputs.installer-file }}
+        asset_name: ${{ steps.compile-installer.outputs.installer-file }}
+        asset_content_type: application/octet-stream

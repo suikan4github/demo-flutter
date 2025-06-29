@@ -15,6 +15,35 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Security
 ### Known Issue
 
+## [v1.9.0] 2025-06-29
+### Added
+- Windows Installer package distribution format using Inno Setup
+- Automated Windows Installer (.exe) build in GitHub Actions release workflow
+- Professional installation experience with setup wizard and uninstaller
+- Windows Installer package: `demo-flutter-${version}-windows-amd64-setup.exe`
+- Desktop and Start Menu shortcuts creation during installation
+- Automatic registration in Windows "Programs and Features" / "Apps & features"
+- Built-in uninstaller with complete cleanup functionality
+- Upgrade detection and automatic old version removal
+- Multi-language support (English and Japanese) in installer
+- Administrator privileges handling for system-wide installation
+
+### Changed
+- Expand Windows distribution options to include ZIP, MSIX, and Installer formats
+- Enhance Windows platform support with professional installation standards
+- Improve user experience with guided installation and proper integration
+- Update release workflow to build comprehensive Windows package portfolio
+
+### Technical Details
+- Uses Inno Setup 6 for professional Windows installer creation
+- Includes desktop shortcut creation (optional)
+- Automatic uninstaller generation and registration
+- Supports silent installation and uninstallation modes
+- Proper Windows integration with Add/Remove Programs
+- Upgrade-aware installation with automatic old version cleanup
+- File association and registry cleanup on uninstall
+- Multi-architecture support (x64 optimized)
+
 ## [v1.8.6] 2025-06-29
 ### Fixed
 - Fix MSIX file location detection in Windows build workflow
@@ -357,7 +386,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [v1.0.0] 2025-06-28
 Pre-release version. 
 
-[Unreleased]: https://github.com/suikan4github/demo-flutter/compare/v1.8.6...develop
+[Unreleased]: https://github.com/suikan4github/demo-flutter/compare/v1.9.0...develop
+[v1.9.0]: https://github.com/suikan4github/demo-flutter/compare/v1.8.6...v1.9.0
 [v1.8.6]: https://github.com/suikan4github/demo-flutter/compare/v1.8.5...v1.8.6
 [v1.8.5]: https://github.com/suikan4github/demo-flutter/compare/v1.8.4...v1.8.5
 [v1.8.4]: https://github.com/suikan4github/demo-flutter/compare/v1.8.3...v1.8.4

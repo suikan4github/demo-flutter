@@ -60,6 +60,14 @@ demo-flutter  # Run from anywhere
 
 #### Windows Installation
 
+**Windows Installer (Recommended):**
+1. Download `demo-flutter-v*-windows-amd64-setup.exe`
+2. Double-click the installer to run the setup wizard
+3. Follow the installation prompts (Administrator privileges required)
+4. Launch from Start Menu, Desktop shortcut, or search "Demo Flutter"
+
+*Professional installation with Start Menu integration, Desktop shortcut, and automatic uninstaller registration*
+
 **ZIP Package (Portable):**
 1. Download `demo-flutter-v*-windows-amd64.zip`
 2. Extract the ZIP file to your desired location
