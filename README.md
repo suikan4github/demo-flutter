@@ -23,8 +23,10 @@ Download the latest release for your platform:
 - **Windows Installer**: [Latest Release](https://github.com/suikan4github/demo-flutter/releases/latest) - Professional Windows installer with setup wizard (x86_64/amd64)
 
 ### macOS Packages
-- **macOS ZIP**: [Latest Release](https://github.com/suikan4github/demo-flutter/releases/latest) - Portable macOS application bundle (x86_64/amd64)
-- **macOS DMG**: [Latest Release](https://github.com/suikan4github/demo-flutter/releases/latest) - macOS disk image installer (x86_64/amd64)
+- **macOS ZIP (Intel)**: [Latest Release](https://github.com/suikan4github/demo-flutter/releases/latest) - Portable macOS application bundle for Intel Macs (x86_64/amd64)
+- **macOS DMG (Intel)**: [Latest Release](https://github.com/suikan4github/demo-flutter/releases/latest) - macOS disk image installer for Intel Macs (x86_64/amd64)
+- **macOS ZIP (Apple Silicon)**: [Latest Release](https://github.com/suikan4github/demo-flutter/releases/latest) - Native Apple Silicon application bundle (ARM64)
+- **macOS DMG (Apple Silicon)**: [Latest Release](https://github.com/suikan4github/demo-flutter/releases/latest) - Native Apple Silicon disk image installer (ARM64)
 
 ### Installation Methods
 
@@ -94,8 +96,12 @@ demo-flutter  # Run from anywhere
 
 #### macOS Installation
 
+**Choose the right version for your Mac:**
+- **Intel Mac**: Download files with `amd64` suffix (e.g., `demo-flutter-v*-macos-amd64.zip`)
+- **Apple Silicon Mac (M1/M2/M3)**: Download files with `arm64` suffix (e.g., `demo-flutter-v*-macos-arm64.zip`)
+
 **ZIP Package (Portable):**
-1. Download `demo-flutter-v*-macos-amd64.zip`
+1. Download the appropriate ZIP file for your Mac architecture
 2. Extract the ZIP file to your desired location
 3. Double-click `demo_flutter.app` to run the application
 4. If you see "demo_flutter.app can't be opened because it is from an unidentified developer":
@@ -106,7 +112,7 @@ demo-flutter  # Run from anywhere
 *No installation required - fully portable macOS application bundle*
 
 **DMG Package (Recommended):**
-1. Download `demo-flutter-v*-macos-amd64.dmg`
+1. Download the appropriate DMG file for your Mac architecture
 2. Double-click the DMG file to mount it
 3. Drag `demo_flutter.app` to the Applications folder
 4. Launch from Applications folder or Spotlight search
@@ -115,12 +121,16 @@ demo-flutter  # Run from anywhere
 *Professional macOS installation with drag-and-drop to Applications folder*
 
 ### Architecture Support
-This application is built for **x86_64 (amd64)** architecture:
+This application is built for multiple architectures:
 - **Linux x86_64 (amd64)**: Intel/AMD 64-bit processors, compatible with most modern Linux Desktop systems
 - **Windows x86_64 (amd64)**: Intel/AMD 64-bit processors, compatible with Windows 10/11 (64-bit)
 - **macOS x86_64 (amd64)**: Intel-based Mac computers, compatible with macOS 10.14 (Mojave) and later
+- **macOS ARM64**: Apple Silicon Macs (M1/M2/M3), native performance without Rosetta 2
 
-**Note:** macOS Apple Silicon (M1/M2) Macs can run x86_64 applications through Rosetta 2 translation.
+**Note:** 
+- Intel Mac users should download the `amd64` versions
+- Apple Silicon Mac users should download the `arm64` versions for optimal performance
+- `arm64` versions provide native Apple Silicon performance without translation layers
 
 # Development
 

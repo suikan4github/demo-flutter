@@ -15,6 +15,30 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Security
 ### Known Issue
 
+## [v1.11.0] 2025-06-29
+### Added
+- Apple Silicon (ARM64) native support for macOS platform
+- Dedicated ARM64 builds for M1/M2/M3 Mac computers
+- Native Apple Silicon performance without Rosetta 2 translation
+- macOS ARM64 ZIP package: `demo-flutter-${version}-macos-arm64.zip`
+- macOS ARM64 DMG package: `demo-flutter-${version}-macos-arm64.dmg`
+- Architecture-specific download guidance in documentation
+- Separate build jobs for x86_64 and ARM64 macOS architectures
+
+### Changed
+- Expand macOS support from Intel-only to Universal (Intel + Apple Silicon)
+- Update macOS package naming to clarify architecture (amd64 vs arm64)
+- Enhance macOS installation instructions with architecture selection guidance
+- Improve CI/CD pipeline with dual-architecture macOS builds
+- Update documentation to reflect multi-architecture macOS support
+
+### Technical Details
+- Use `--target-platform darwin-arm64` for native Apple Silicon builds
+- Use `--target-platform darwin-x64` for Intel Mac builds
+- Maintain separate GitHub Actions jobs for each architecture
+- Provide optimal performance for both Intel and Apple Silicon Macs
+- Clear architecture identification in package filenames and DMG volume names
+
 ## [v1.10.1] 2025-06-29
 ### Fixed
 - Fix macOS build failure due to missing macOS platform support in project
@@ -455,7 +479,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [v1.0.0] 2025-06-28
 Pre-release version. 
 
-[Unreleased]: https://github.com/suikan4github/demo-flutter/compare/v1.10.1...develop
+[Unreleased]: https://github.com/suikan4github/demo-flutter/compare/v1.11.0...develop
+[v1.11.0]: https://github.com/suikan4github/demo-flutter/compare/v1.10.1...v1.11.0
 [v1.10.1]: https://github.com/suikan4github/demo-flutter/compare/v1.10.0...v1.10.1
 [v1.10.0]: https://github.com/suikan4github/demo-flutter/compare/v1.9.2...v1.10.0
 [v1.9.2]: https://github.com/suikan4github/demo-flutter/compare/v1.9.1...v1.9.2
