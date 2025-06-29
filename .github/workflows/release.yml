@@ -1008,7 +1008,10 @@ jobs:
         channel: 'stable'
         
     - name: Enable macOS desktop support
-      run: flutter config --enable-macos-desktop
+      run: |
+        flutter config --enable-macos-desktop
+        # Ensure macOS platform support is added to the project
+        flutter create --platforms=macos .
       
     - name: Get dependencies
       run: flutter pub get
@@ -1056,7 +1059,10 @@ jobs:
         channel: 'stable'
         
     - name: Enable macOS desktop support
-      run: flutter config --enable-macos-desktop
+      run: |
+        flutter config --enable-macos-desktop
+        # Ensure macOS platform support is added to the project
+        flutter create --platforms=macos .
       
     - name: Get dependencies
       run: flutter pub get

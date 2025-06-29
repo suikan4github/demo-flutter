@@ -15,6 +15,20 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Security
 ### Known Issue
 
+## [v1.10.1] 2025-06-29
+### Fixed
+- Fix macOS build failure due to missing macOS platform support in project
+- Add `flutter create --platforms=macos .` to GitHub Actions workflow
+- Ensure macOS desktop project configuration is properly initialized
+- Resolve "No macOS desktop project configured" error in CI/CD pipeline
+- Add macOS platform files (macos/ directory) to the repository
+
+### Technical Details
+- Add macOS platform support generation step in both ZIP and DMG build jobs
+- Use `flutter create --platforms=macos .` to add macOS support to existing project
+- Include complete macOS project structure with Xcode configuration
+- Ensure proper macOS .app bundle generation for both distribution formats
+
 ## [v1.10.0] 2025-06-29
 ### Added
 - macOS platform support with ZIP and DMG distribution formats
@@ -441,7 +455,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [v1.0.0] 2025-06-28
 Pre-release version. 
 
-[Unreleased]: https://github.com/suikan4github/demo-flutter/compare/v1.10.0...develop
+[Unreleased]: https://github.com/suikan4github/demo-flutter/compare/v1.10.1...develop
+[v1.10.1]: https://github.com/suikan4github/demo-flutter/compare/v1.10.0...v1.10.1
 [v1.10.0]: https://github.com/suikan4github/demo-flutter/compare/v1.9.2...v1.10.0
 [v1.9.2]: https://github.com/suikan4github/demo-flutter/compare/v1.9.1...v1.9.2
 [v1.9.1]: https://github.com/suikan4github/demo-flutter/compare/v1.9.0...v1.9.1
