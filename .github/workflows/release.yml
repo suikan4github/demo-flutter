@@ -749,9 +749,28 @@ jobs:
         Write-Host "Files after MSIX creation:"
         Get-ChildItem -Name
         
-        # Check for MSIX file existence
+        # Check for MSIX file existence in both root and build directory
         $version = "${{ needs.create-release.outputs.version }}"
+        
+        # First check in root directory
         $msixFile = Get-ChildItem -Name "*.msix" | Select-Object -First 1
+        
+        if (-not $msixFile) {
+            Write-Host "No MSIX file found in root directory, checking build subdirectory..."
+            # Check in build directory where MSIX is typically created
+            $msixPath = "build\windows\x64\runner\Release\*.msix"
+            $buildMsixFiles = Get-ChildItem -Path $msixPath -ErrorAction SilentlyContinue
+            
+            if ($buildMsixFiles) {
+                $msixFile = $buildMsixFiles[0].Name
+                $msixFullPath = $buildMsixFiles[0].FullName
+                Write-Host "Found MSIX file in build directory: $msixFullPath"
+                
+                # Copy MSIX file to root directory for easier handling
+                Copy-Item $msixFullPath . -Force
+                Write-Host "Copied MSIX file to root directory"
+            }
+        }
         
         if (-not $msixFile) {
             Write-Error "No MSIX file generated. Check msix:create output and msix_config configuration in pubspec.yaml."

@@ -15,6 +15,21 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Security
 ### Known Issue
 
+## [v1.8.6] 2025-06-29
+### Fixed
+- Fix MSIX file location detection in Windows build workflow
+- Resolve MSIX file not found error when file is created in build subdirectory
+- Add intelligent MSIX file search in both root and build directories
+- Handle MSIX file location in `build\windows\x64\runner\Release\` directory
+- Automatically copy MSIX file from build directory to root for processing
+
+### Technical Details
+- Search for MSIX files in both root directory and `build\windows\x64\runner\Release\`
+- Copy MSIX file from build directory to root directory for easier handling
+- Improve file location detection logic to handle Flutter's MSIX output location
+- Add detailed logging for MSIX file discovery and processing
+- Ensure proper file handling regardless of MSIX creation location
+
 ## [v1.8.5] 2025-06-29
 ### Fixed
 - Fix MSIX interactive certificate installation prompt blocking GitHub Actions workflow
@@ -342,7 +357,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [v1.0.0] 2025-06-28
 Pre-release version. 
 
-[Unreleased]: https://github.com/suikan4github/demo-flutter/compare/v1.8.5...develop
+[Unreleased]: https://github.com/suikan4github/demo-flutter/compare/v1.8.6...develop
+[v1.8.6]: https://github.com/suikan4github/demo-flutter/compare/v1.8.5...v1.8.6
 [v1.8.5]: https://github.com/suikan4github/demo-flutter/compare/v1.8.4...v1.8.5
 [v1.8.4]: https://github.com/suikan4github/demo-flutter/compare/v1.8.3...v1.8.4
 [v1.8.3]: https://github.com/suikan4github/demo-flutter/compare/v1.8.2...v1.8.3
