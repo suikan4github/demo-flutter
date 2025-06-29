@@ -734,10 +734,33 @@ jobs:
       
     - name: Create MSIX package
       run: |
+        # Debug: Show current directory and files
+        Write-Host "Current directory: $(Get-Location)"
+        Write-Host "Files before MSIX creation:"
+        Get-ChildItem -Name
+        
+        # Create MSIX package
+        Write-Host "Running dart run msix:create..."
         dart run msix:create
+        
+        # Debug: Show files after MSIX creation
+        Write-Host "Files after MSIX creation:"
+        Get-ChildItem -Name
+        
+        # Check for MSIX file existence
         $version = "${{ needs.create-release.outputs.version }}"
         $msixFile = Get-ChildItem -Name "*.msix" | Select-Object -First 1
+        
+        if (-not $msixFile) {
+            Write-Error "No MSIX file generated. Check msix:create output and msix_config configuration in pubspec.yaml."
+            Write-Host "Available files:"
+            Get-ChildItem -Recurse -Name "*.msix"
+            exit 1
+        }
+        
+        Write-Host "Found MSIX file: $msixFile"
         $newName = "demo-flutter-$version-windows-amd64.msix"
+        Write-Host "Renaming to: $newName"
         Rename-Item $msixFile $newName
         echo "msix-file=$newName" >> $env:GITHUB_OUTPUT
       id: create-msix

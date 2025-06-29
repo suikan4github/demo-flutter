@@ -15,6 +15,21 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Security
 ### Known Issue
 
+## [v1.8.4] 2025-06-29
+### Fixed
+- Fix MSIX package creation error in Windows build workflow
+- Add existence check for generated MSIX file before renaming
+- Resolve "type 'Null' is not a subtype of type 'FutureOr<String>'" error
+- Enhance error handling and debugging output in MSIX creation step
+- Prevent workflow failure when dart run msix:create doesn't generate expected file
+
+### Technical Details
+- Add file existence validation before attempting to rename MSIX package
+- Include comprehensive debugging output to diagnose MSIX generation issues
+- Improve error messages when MSIX file is not found after creation
+- Add recursive search for MSIX files in case of unexpected location
+- Enhance workflow reliability with proper null checks and error handling
+
 ## [v1.8.3] 2025-06-29
 ### Fixed
 - Fix MSIX AppxManifest.xml invalid FileType configuration error
@@ -312,7 +327,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [v1.0.0] 2025-06-28
 Pre-release version. 
 
-[Unreleased]: https://github.com/suikan4github/demo-flutter/compare/v1.8.3...develop
+[Unreleased]: https://github.com/suikan4github/demo-flutter/compare/v1.8.4...develop
+[v1.8.4]: https://github.com/suikan4github/demo-flutter/compare/v1.8.3...v1.8.4
 [v1.8.3]: https://github.com/suikan4github/demo-flutter/compare/v1.8.2...v1.8.3
 [v1.8.2]: https://github.com/suikan4github/demo-flutter/compare/v1.8.1...v1.8.2
 [v1.8.1]: https://github.com/suikan4github/demo-flutter/compare/v1.8.0...v1.8.1
