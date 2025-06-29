@@ -15,6 +15,21 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Security
 ### Known Issue
 
+## [v1.8.5] 2025-06-29
+### Fixed
+- Fix MSIX interactive certificate installation prompt blocking GitHub Actions workflow
+- Resolve "Do you want to install the certificate" prompt causing workflow timeout
+- Automatically answer 'y' to certificate installation prompt in non-interactive environment
+- Fix MSIX package creation failure due to unhandled user input prompt
+- Enhance MSIX file search with full path debugging output
+
+### Technical Details
+- Use `echo "y" | dart run msix:create` to automatically accept certificate installation
+- Add comprehensive MSIX file location debugging with full paths
+- Prevent workflow hanging on interactive prompts in GitHub Actions environment
+- Resolve certificate installation blocking issue in automated builds
+- Improve error diagnostics for MSIX generation troubleshooting
+
 ## [v1.8.4] 2025-06-29
 ### Fixed
 - Fix MSIX package creation error in Windows build workflow
@@ -327,7 +342,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [v1.0.0] 2025-06-28
 Pre-release version. 
 
-[Unreleased]: https://github.com/suikan4github/demo-flutter/compare/v1.8.4...develop
+[Unreleased]: https://github.com/suikan4github/demo-flutter/compare/v1.8.5...develop
+[v1.8.5]: https://github.com/suikan4github/demo-flutter/compare/v1.8.4...v1.8.5
 [v1.8.4]: https://github.com/suikan4github/demo-flutter/compare/v1.8.3...v1.8.4
 [v1.8.3]: https://github.com/suikan4github/demo-flutter/compare/v1.8.2...v1.8.3
 [v1.8.2]: https://github.com/suikan4github/demo-flutter/compare/v1.8.1...v1.8.2

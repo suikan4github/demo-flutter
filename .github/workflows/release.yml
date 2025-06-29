@@ -739,9 +739,11 @@ jobs:
         Write-Host "Files before MSIX creation:"
         Get-ChildItem -Name
         
-        # Create MSIX package
-        Write-Host "Running dart run msix:create..."
-        dart run msix:create
+        # Create MSIX package with automatic certificate installation
+        Write-Host "Running dart run msix:create with automatic certificate installation..."
+        
+        # Use echo to automatically answer 'y' to certificate installation prompt
+        echo "y" | dart run msix:create
         
         # Debug: Show files after MSIX creation
         Write-Host "Files after MSIX creation:"
@@ -755,6 +757,10 @@ jobs:
             Write-Error "No MSIX file generated. Check msix:create output and msix_config configuration in pubspec.yaml."
             Write-Host "Available files:"
             Get-ChildItem -Recurse -Name "*.msix"
+            
+            # Check if MSIX files exist in subdirectories
+            Write-Host "Searching for MSIX files in subdirectories:"
+            Get-ChildItem -Recurse -Filter "*.msix" | ForEach-Object { Write-Host $_.FullName }
             exit 1
         }
         
