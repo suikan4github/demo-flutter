@@ -15,6 +15,21 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Security
 ### Known Issue
 
+## [v1.11.1] 2025-06-29
+### Fixed
+- Fix macOS ARM64 build failure due to invalid `--target-platform` flag
+- Use platform-specific GitHub Actions runners for native architecture builds
+- Replace `--target-platform` approach with runner-based architecture targeting
+- Use `macos-13` (Intel) runner for x86_64 builds and `macos-latest` (Apple Silicon) for ARM64 builds
+- Ensure proper native binary generation for each macOS architecture
+
+### Technical Details
+- Remove unsupported `--target-platform darwin-arm64` and `--target-platform darwin-x64` flags
+- Use `macos-13` runner for Intel-based x86_64 native builds
+- Use `macos-latest` runner for Apple Silicon ARM64 native builds
+- Each runner produces optimized binaries for its native architecture
+- Maintain standard `flutter build macos --release` command for both architectures
+
 ## [v1.11.0] 2025-06-29
 ### Added
 - Apple Silicon (ARM64) native support for macOS platform
@@ -479,7 +494,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [v1.0.0] 2025-06-28
 Pre-release version. 
 
-[Unreleased]: https://github.com/suikan4github/demo-flutter/compare/v1.11.0...develop
+[Unreleased]: https://github.com/suikan4github/demo-flutter/compare/v1.11.1...develop
+[v1.11.1]: https://github.com/suikan4github/demo-flutter/compare/v1.11.0...v1.11.1
 [v1.11.0]: https://github.com/suikan4github/demo-flutter/compare/v1.10.1...v1.11.0
 [v1.10.1]: https://github.com/suikan4github/demo-flutter/compare/v1.10.0...v1.10.1
 [v1.10.0]: https://github.com/suikan4github/demo-flutter/compare/v1.9.2...v1.10.0

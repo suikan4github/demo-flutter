@@ -995,7 +995,7 @@ jobs:
   build-macos-zip:
     name: Build macOS x86_64 ZIP Package
     needs: create-release
-    runs-on: macos-latest
+    runs-on: macos-13  # Intel-based runner for x86_64 builds
     
     steps:
     - name: Checkout code
@@ -1018,8 +1018,8 @@ jobs:
       
     - name: Build macOS x86_64 application
       run: |
-        # Build specifically for x86_64 architecture
-        flutter build macos --release --target-platform darwin-x64
+        # Build on Intel runner for native x86_64 binary
+        flutter build macos --release
       
     - name: Create ZIP archive
       run: |
@@ -1048,7 +1048,7 @@ jobs:
   build-macos-dmg:
     name: Build macOS x86_64 DMG Package
     needs: create-release
-    runs-on: macos-latest
+    runs-on: macos-13  # Intel-based runner for x86_64 builds
     
     steps:
     - name: Checkout code
@@ -1071,8 +1071,8 @@ jobs:
       
     - name: Build macOS x86_64 application
       run: |
-        # Build specifically for x86_64 architecture  
-        flutter build macos --release --target-platform darwin-x64
+        # Build on Intel runner for native x86_64 binary
+        flutter build macos --release
       
     - name: Create DMG package
       run: |
@@ -1127,7 +1127,7 @@ jobs:
   build-macos-arm64-zip:
     name: Build macOS ARM64 ZIP Package
     needs: create-release
-    runs-on: macos-latest
+    runs-on: macos-latest  # Apple Silicon runner for ARM64 builds
     
     steps:
     - name: Checkout code
@@ -1150,8 +1150,8 @@ jobs:
       
     - name: Build macOS ARM64 application
       run: |
-        # Build specifically for ARM64 architecture
-        flutter build macos --release --target-platform darwin-arm64
+        # Build on Apple Silicon runner for native ARM64 binary
+        flutter build macos --release
       
     - name: Create ZIP archive
       run: |
@@ -1180,7 +1180,7 @@ jobs:
   build-macos-arm64-dmg:
     name: Build macOS ARM64 DMG Package
     needs: create-release
-    runs-on: macos-latest
+    runs-on: macos-latest  # Apple Silicon runner for ARM64 builds
     
     steps:
     - name: Checkout code
@@ -1203,8 +1203,8 @@ jobs:
       
     - name: Build macOS ARM64 application
       run: |
-        # Build specifically for ARM64 architecture
-        flutter build macos --release --target-platform darwin-arm64
+        # Build on Apple Silicon runner for native ARM64 binary
+        flutter build macos --release
       
     - name: Create DMG package
       run: |
