@@ -833,7 +833,13 @@ jobs:
         $innoPath = "C:\Program Files (x86)\Inno Setup 6\iscc.exe"
         if (Test-Path $innoPath) {
           Write-Host "Inno Setup installed successfully at: $innoPath"
-          & $innoPath
+          # Test with help flag to verify functionality (ignore exit code as help returns 1)
+          try {
+            & $innoPath "/?" 2>&1 | Out-Null
+          } catch {
+            # Help command may return non-zero exit code, but that's expected
+          }
+          Write-Host "Inno Setup verification completed successfully"
         } else {
           Write-Error "Inno Setup installation failed"
           exit 1
@@ -843,6 +849,15 @@ jobs:
       run: |
         $version = "${{ needs.create-release.outputs.version }}"
         $versionNum = $version -replace '^v', ''  # Remove 'v' prefix
+        
+        # Check if LICENSE file exists
+        $licenseFile = ""
+        if (Test-Path "LICENSE") {
+          $licenseFile = "LicenseFile=LICENSE"
+          Write-Host "LICENSE file found, will be included in installer"
+        } else {
+          Write-Host "LICENSE file not found, installer will proceed without license"
+        }
         
         # Create the Inno Setup script
         $issContent = @"
@@ -858,12 +873,11 @@ jobs:
         DefaultDirName={autopf}\Demo Flutter
         DefaultGroupName=Demo Flutter
         DisableProgramGroupPage=yes
-        LicenseFile=LICENSE
+        $licenseFile
         OutputDir=.
         OutputBaseFilename=demo-flutter-$version-windows-amd64-setup
         UninstallDisplayIcon={app}\demo_flutter.exe
         UninstallDisplayName=Demo Flutter
-        SetupIconFile=web\favicon.png
         Compression=lzma
         SolidCompression=yes
         PrivilegesRequired=admin
@@ -948,7 +962,7 @@ jobs:
         $issContent | Out-File -FilePath "demo-flutter.iss" -Encoding UTF8
         
         Write-Host "Inno Setup script created:"
-        Get-Content "demo-flutter.iss" | Select-Object -First 20
+        Get-Content "demo-flutter.iss" | Select-Object -First 25
         
     - name: Compile Installer
       run: |

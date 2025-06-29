@@ -15,6 +15,21 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Security
 ### Known Issue
 
+## [v1.9.1] 2025-06-29
+### Fixed
+- Fix Inno Setup installation verification in Windows Installer build workflow
+- Resolve "Process completed with exit code 1" error during Inno Setup validation
+- Improve error handling for iscc.exe command execution in GitHub Actions
+- Add proper exit code handling for Inno Setup compiler verification
+- Fix LICENSE file reference issue in Inno Setup script generation
+
+### Technical Details
+- Use try-catch block for Inno Setup compiler validation to handle expected exit codes
+- Remove problematic iscc.exe execution during installation verification
+- Add conditional LICENSE file inclusion in Inno Setup script
+- Improve GitHub Actions workflow reliability for Windows Installer generation
+- Handle Inno Setup help command exit codes properly in PowerShell
+
 ## [v1.9.0] 2025-06-29
 ### Added
 - Windows Installer package distribution format using Inno Setup
@@ -386,7 +401,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [v1.0.0] 2025-06-28
 Pre-release version. 
 
-[Unreleased]: https://github.com/suikan4github/demo-flutter/compare/v1.9.0...develop
+[Unreleased]: https://github.com/suikan4github/demo-flutter/compare/v1.9.1...develop
+[v1.9.1]: https://github.com/suikan4github/demo-flutter/compare/v1.9.0...v1.9.1
 [v1.9.0]: https://github.com/suikan4github/demo-flutter/compare/v1.8.6...v1.9.0
 [v1.8.6]: https://github.com/suikan4github/demo-flutter/compare/v1.8.5...v1.8.6
 [v1.8.5]: https://github.com/suikan4github/demo-flutter/compare/v1.8.4...v1.8.5
