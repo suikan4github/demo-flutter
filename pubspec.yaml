@@ -45,6 +45,9 @@ dev_dependencies:
   # package. See that file for information about deactivating specific lint
   # rules and activating additional ones.
   flutter_lints: ^6.0.0
+  
+  # MSIX package for Windows distribution
+  msix: ^3.16.8
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec
@@ -87,3 +90,17 @@ flutter:
   #
   # For details regarding fonts from package dependencies,
   # see https://flutter.dev/to/font-from-package
+
+# MSIX configuration for Windows package
+msix_config:
+  display_name: Demo Flutter
+  publisher_display_name: Demo Flutter Publisher
+  identity_name: com.example.demo_flutter
+  msix_version: 1.0.0.0
+  description: A Flutter demonstration application with cross-platform packaging
+  publisher: CN=Demo Flutter Publisher
+  certificate_path: STORE
+  store: true
+  capabilities: 'internetClient,microphone,webcam'
+  languages: en-us
+  file_extension: ''

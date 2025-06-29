@@ -19,6 +19,7 @@ Download the latest release for your platform:
 
 ### Windows Packages
 - **Windows ZIP**: [Latest Release](https://github.com/suikan4github/demo-flutter/releases/latest) - Portable Windows application (x86_64/amd64)
+- **Windows MSIX**: [Latest Release](https://github.com/suikan4github/demo-flutter/releases/latest) - Modern Windows 10/11 package (x86_64/amd64)
 
 ### Installation Methods
 
@@ -65,6 +66,18 @@ demo-flutter  # Run from anywhere
 3. Run `demo_flutter.exe` from the extracted folder
 
 *No installation required - fully portable Windows application*
+
+**MSIX Package (Modern Windows 10/11):**
+1. Download `demo-flutter-v*-windows-amd64.msix`
+2. Double-click the MSIX file to install
+3. Click "Install" when prompted (sideloading required)
+4. Launch from Start Menu or search "Demo Flutter"
+
+*Modern Windows package with automatic updates and clean uninstall*
+
+**Note:** MSIX packages require enabling sideloading in Windows settings:
+- Go to Settings > Update & Security > For developers
+- Select "Sideload apps" or "Developer mode"
 
 ### Architecture Support
 This application is built for **x86_64 (amd64)** architecture:

@@ -15,6 +15,27 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Security
 ### Known Issue
 
+## [v1.8.0] 2025-06-29
+### Added
+- Windows MSIX package distribution format
+- Automated MSIX build in GitHub Actions release workflow
+- Modern Windows 10/11 native package format with enhanced security
+- MSIX package: `demo-flutter-${version}-windows-amd64.msix`
+- Windows application manifest for MSIX packaging
+- Enhanced Windows integration with MSIX capabilities
+
+### Changed
+- Expand Windows distribution options to include both ZIP and MSIX formats
+- Update release workflow to build multiple Windows package types
+- Enhance Windows platform support with modern packaging standards
+- Improve Windows application deployment and installation experience
+
+### Technical Details
+- MSIX builds use Flutter's built-in MSIX support via `msix` package
+- Automated certificate generation for development/testing purposes
+- MSIX packages support sideloading without Microsoft Store registration
+- Enhanced Windows integration including file associations and notifications
+
 ## [v1.7.0] 2025-06-29
 ### Added
 - Windows platform support with ZIP distribution format
@@ -251,7 +272,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [v1.0.0] 2025-06-28
 Pre-release version. 
 
-[Unreleased]: https://github.com/suikan4github/demo-flutter/compare/v1.7.0...develop
+[Unreleased]: https://github.com/suikan4github/demo-flutter/compare/v1.8.0...develop
+[v1.8.0]: https://github.com/suikan4github/demo-flutter/compare/v1.7.0...v1.8.0
 [v1.7.0]: https://github.com/suikan4github/demo-flutter/compare/v1.6.9...v1.7.0
 [v1.6.9]: https://github.com/suikan4github/demo-flutter/compare/v1.6.8...v1.6.9
 [v1.6.8]: https://github.com/suikan4github/demo-flutter/compare/v1.6.7...v1.6.8
