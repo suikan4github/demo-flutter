@@ -19,7 +19,7 @@ jobs:
     
     steps:
     - name: Checkout code
-      uses: actions/checkout@v4
+      uses: actions/checkout@v6
       with:
         fetch-depth: 0  # 全履歴を取得してCHANGELOGを生成
         
@@ -59,7 +59,7 @@ jobs:
     
     steps:
     - name: Checkout code
-      uses: actions/checkout@v4
+      uses: actions/checkout@v6
         
     - name: Setup Flutter
       uses: subosito/flutter-action@v2
@@ -103,7 +103,7 @@ jobs:
     
     steps:
     - name: Checkout code
-      uses: actions/checkout@v4
+      uses: actions/checkout@v6
         
     - name: Setup Flutter
       uses: subosito/flutter-action@v2
@@ -249,7 +249,7 @@ jobs:
     
     steps:
     - name: Checkout code
-      uses: actions/checkout@v4
+      uses: actions/checkout@v6
         
     - name: Setup Flutter
       uses: subosito/flutter-action@v2
@@ -344,7 +344,7 @@ jobs:
     
     steps:
     - name: Checkout code
-      uses: actions/checkout@v4
+      uses: actions/checkout@v6
         
     - name: Setup Flutter
       uses: subosito/flutter-action@v2
@@ -525,7 +525,7 @@ jobs:
     
     steps:
     - name: Checkout code
-      uses: actions/checkout@v4
+      uses: actions/checkout@v6
         
     - name: Setup Flutter
       uses: subosito/flutter-action@v2
@@ -662,7 +662,7 @@ jobs:
     
     steps:
     - name: Checkout code
-      uses: actions/checkout@v4
+      uses: actions/checkout@v6
         
     - name: Setup Flutter
       uses: subosito/flutter-action@v2
@@ -704,7 +704,7 @@ jobs:
     
     steps:
     - name: Checkout code
-      uses: actions/checkout@v4
+      uses: actions/checkout@v6
         
     - name: Setup Flutter
       uses: subosito/flutter-action@v2
@@ -807,7 +807,7 @@ jobs:
     
     steps:
     - name: Checkout code
-      uses: actions/checkout@v4
+      uses: actions/checkout@v6
         
     - name: Setup Flutter
       uses: subosito/flutter-action@v2
@@ -999,7 +999,7 @@ jobs:
     
     steps:
     - name: Checkout code
-      uses: actions/checkout@v4
+      uses: actions/checkout@v6
         
     - name: Setup Flutter
       uses: subosito/flutter-action@v2
@@ -1052,7 +1052,7 @@ jobs:
     
     steps:
     - name: Checkout code
-      uses: actions/checkout@v4
+      uses: actions/checkout@v6
         
     - name: Setup Flutter
       uses: subosito/flutter-action@v2
@@ -1131,7 +1131,7 @@ jobs:
     
     steps:
     - name: Checkout code
-      uses: actions/checkout@v4
+      uses: actions/checkout@v6
         
     - name: Setup Flutter
       uses: subosito/flutter-action@v2
@@ -1184,7 +1184,7 @@ jobs:
     
     steps:
     - name: Checkout code
-      uses: actions/checkout@v4
+      uses: actions/checkout@v6
         
     - name: Setup Flutter
       uses: subosito/flutter-action@v2
